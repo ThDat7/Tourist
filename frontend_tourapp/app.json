@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "frontend_tourapp",
+    "slug": "frontend_tourapp",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "frontend_tourapp"
+}
