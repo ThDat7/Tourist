@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 # Create your models here.
-class UserRole(models.CharField):
+class UserRole(models.TextChoices):
     ADMIN = "ADMIN", _("Admin")
     STAFF = "STAFF", _("Staff")
     CUSTOMER = "CUSTOMER", _("Customer")
@@ -72,8 +72,10 @@ class ScheduleOnetime(models.Model):
 
 
 class BookingStatus(models.TextChoices):
-    UNPAID = "UNPAID", _("Unpaid")
-    PAID = "PAID", _("Paid")
+    UNPAID = "UNPAID", _("Chưa thanh toán")
+    WAITING_FOR_DEPARTURE = "WAITING_FOR_DEPARTURE", _("Đợi khởi hành")
+    COMPLETED = "COMPLETED", _("Đã đi")
+    CANCELLED = "CANCELLED", _("Đã hủy")
 
 
 class Booking(models.Model):
@@ -83,7 +85,7 @@ class Booking(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     adult_price = models.IntegerField(null=False)
     child_price = models.IntegerField(null=False)
-    status = models.CharField(max_length=20, choices=BookingStatus, default=BookingStatus.UNPAID)
+    status = models.CharField(max_length=50, choices=BookingStatus, default=BookingStatus.UNPAID)
 
 
 class Rating(models.Model):
