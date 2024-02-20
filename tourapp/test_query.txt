@@ -1,0 +1,15 @@
+from django.db import connection
+from tours.models import *
+from tours.serializers import *
+
+connection.queries_log.clear()
+
+tours = Tour.objects.filter(id__in=[1]).select_related('place')
+tourist_places = TouristPlace.objects.filter(id__in=[1])
+data = {'tours': tours,'tourist_places': tourist_places}
+serializer = SearchSuggestionSerializer(data)
+serializer.data
+
+print(len(connection.queries))
+connection.queries
+
