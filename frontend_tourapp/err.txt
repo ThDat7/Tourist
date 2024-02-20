@@ -1,0 +1,4 @@
+*****search screen*****
+ô search bị che
+không tự focus, hiện bàn phím nhập
+// debounce search
