@@ -7,15 +7,17 @@ fake = Faker()
 
 if __name__ == '__main__':
     import os
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tourapp.settings")
     import django
+
     django.setup()
     from django.core.management import call_command
 
     from django.contrib.auth.hashers import make_password
     from tours.models import Customer, Staff, Tag, TouristPlace, Tour, ScheduleRecurringDaily, ScheduleRecurringWeekly, \
-    ScheduleRecurringInWeek, ScheduleExcludeDate, BookingStatus, Booking, Rating, TourComment, News, NewsComment, \
-    NewsLike, Config, ConfigKey, User, Admin
+        ScheduleRecurringInWeek, ScheduleExcludeDate, BookingStatus, Booking, Rating, TourComment, News, NewsComment, \
+        NewsLike, Config, ConfigKey, User, Admin
 
 
     # Tạo dữ liệu giả cho User
@@ -24,59 +26,57 @@ if __name__ == '__main__':
             username = fake.user_name()
             email = fake.email()
             password = make_password(fake.password())
-            user = User.objects.create(username=username, email=email, password=password)
+            avatar_url = fake.image_url()
+            user = User.objects.create(username=username, email=email, password=password, avatar='https://res.cloudinary.com/dxxwcby8l/image/upload/v1690537829/oq9paksbwpwnuxybhvbw.jpg')
             print(f"Created User: {user.username}, Password: {fake.password()}")
 
-
-    # Tạo dữ liệu giả cho Admin
     def create_admins(num_admins=1):
         for _ in range(num_admins):
-            username = fake.user_name()
+            username = 'admin'
             email = fake.email()
-            password = make_password(fake.password())
-            admin_user = User.objects.create(username=username, email=email, password=password, is_staff=True,
-                                             is_superuser=True)
+            password = '123'
+            avatar_url = fake.image_url()
+            admin_user = User.objects.create(username=username, email=email, password=password, avatar=avatar_url,
+                                             is_staff=True, is_superuser=True)
             Admin.objects.create(user=admin_user)
             print(f"Created Admin: {admin_user.username}, Password: {fake.password()}")
 
 
-    # Tạo dữ liệu giả cho Staff
     def create_staff(num_staff=5):
         for _ in range(num_staff):
             username = fake.user_name()
             email = fake.email()
             password = make_password(fake.password())
-            staff_user = User.objects.create(username=username, email=email, password=password, is_staff=True)
+            avatar_url = fake.image_url()
+            staff_user = User.objects.create(username=username, email=email, password=password, avatar=avatar_url,
+                                             is_staff=True)
             Staff.objects.create(user=staff_user)
             print(f"Created Staff: {staff_user.username}, Password: {fake.password()}")
 
 
-    # Tạo dữ liệu giả cho Customer
     def create_customers(num_customers=50):
         for _ in range(num_customers):
             username = fake.user_name()
             email = fake.email()
             password = make_password(fake.password())
-            customer_user = User.objects.create(username=username, email=email, password=password)
+            avatar_url = fake.image_url()
+            customer_user = User.objects.create(username=username, email=email, password=password, avatar=avatar_url)
             Customer.objects.create(user=customer_user)
             print(f"Created Customer: {customer_user.username}, Password: {fake.password()}")
 
 
-    # Tạo dữ liệu giả cho TouristPlace
     def create_tourist_places(num_places=10):
         for _ in range(num_places):
             place = TouristPlace.objects.create(name=fake.city())
             print(f"Created Tourist Place: {place.name}")
 
 
-    # Tạo dữ liệu giả cho Tag
     def create_tags(num_tags=10):
         for _ in range(num_tags):
             tag = Tag.objects.create(name=fake.word())
             print(f"Created Tag: {tag.name}")
 
 
-    # Tạo dữ liệu giả cho Tour
     def create_tours(num_tours=20):
         places = TouristPlace.objects.all()
         tags = Tag.objects.all()
@@ -122,7 +122,9 @@ if __name__ == '__main__':
         tours = Tour.objects.all()
         for tour in tours:
             if not ScheduleRecurringWeekly.objects.filter(tour=tour).exists():
-                ScheduleRecurringWeekly.objects.create(tour=tour, time=fake.time())
+                starting_date = fake.date_time_this_year()  # Sử dụng một ngày giả ngẫu nhiên trong năm này
+                time = fake.time()
+                ScheduleRecurringWeekly.objects.create(tour=tour, starting_date=starting_date, time=time)
                 print(f"Created ScheduleRecurringWeekly for Tour: {tour.name}")
 
 
@@ -137,11 +139,12 @@ if __name__ == '__main__':
 
     # Tạo dữ liệu giả cho ScheduleExcludeDate
     def create_schedule_exclude_dates(num_dates=5):
-        tours = Tour.objects.all()
+        weekly_schedules = ScheduleRecurringWeekly.objects.all()
         for _ in range(num_dates):
-            tour = random.choice(tours)
-            ScheduleExcludeDate.objects.create(tour=tour, date=fake.date())
-            print(f"Created ScheduleExcludeDate for Tour: {tour.name}")
+            weekly_schedule = random.choice(weekly_schedules)
+            date = fake.date()
+            ScheduleExcludeDate.objects.create(recurring=weekly_schedule, date=date)
+            print(f"Created ScheduleExcludeDate for Tour: {weekly_schedule.tour.name}")
 
 
     # Tạo dữ liệu giả cho Booking

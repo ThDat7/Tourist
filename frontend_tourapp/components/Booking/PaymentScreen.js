@@ -18,7 +18,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 
-const OrderTicketScreen = () => {
+const PaymentScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
 
@@ -70,8 +70,6 @@ const OrderTicketScreen = () => {
 
   console.log(tourPricing)
 
-  // const difference = route.params?.oldPrice - route.params?.newPrice
-  // const offerPrice = (Math.abs(difference) / route.params?.oldPrice) * 100
   return (
     <>
       <SafeAreaView>
@@ -233,6 +231,6 @@ const NumbericInput = ({ state, setState }) => {
   )
 }
 
-export default OrderTicketScreen
+export default PaymentScreen
 
 const styles = StyleSheet.create({})

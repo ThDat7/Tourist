@@ -1,12 +1,13 @@
 from django.db.models import Count, Avg
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from tours.models import Tour, TouristPlace, Rating
+from tours.models import Tour, TouristPlace, Rating, ScheduleRecurringWeekly, Customer
 from tours.serializers import SearchSuggestionSerializer, TourSearchSerializer, TourSerializer, RatingSerializer, \
-    TourPricingSerializer
+    TourPricingSerializer, TourScheduleSerializer, CustomerSerializer
 
 
 # Create your views here.
@@ -75,6 +76,21 @@ class TourRatingsView(APIView):
 
 class TourPricingView(APIView):
     def get(self, request, tour_id, format=None):
-        tour = Tour.objects.get(pk=tour_id)
+        tour = Tour.objects.filter(pk=tour_id).select_related('schedulerecurringweekly')
         serializer = TourPricingSerializer(tour)
         return Response(serializer.data)
+
+
+class CustomerView(APIView):
+    def get(self, request, user_id, format=None):
+        customer = Customer.objects.filter(user_id=user_id).select_related('user').first()
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+
+    def put(self, request, user_id, format=None):
+        customer = Customer.objects.filter(user_id=user_id).select_related('user').first()
+        serializer = CustomerSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)

@@ -15,19 +15,12 @@ import { Ionicons } from '@expo/vector-icons'
 import Header from '../../utils/Header'
 import { Feather } from '@expo/vector-icons'
 import DatePicker from 'react-native-date-ranges'
-import { BottomModal } from 'react-native-modals'
-import { ModalFooter } from 'react-native-modals'
-import { ModalButton } from 'react-native-modals'
-import { ModalTitle } from 'react-native-modals'
-import { SlideAnimation } from 'react-native-modals'
-import { ModalContent } from 'react-native-modals'
 import 'moment/locale/vi'
 
 const HomeScreen = () => {
   const navigation = useNavigation()
-  const [selectedDates, setSelectedDates] = useState()
+  const [selectedDates, setSelectedDates] = useState({})
   const route = useRoute()
-  const [modalVisibile, setModalVisibile] = useState(false)
 
   const selectedPlace = route.params?.selectedPlace
 
@@ -69,30 +62,18 @@ const HomeScreen = () => {
       />
     )
   }
-  console.log(route.params)
 
-  const searchPlaces = (place) => {
-    if (!route.params || !selectedDates) {
-      Alert.alert(
-        'Invalid Details',
-        'Please enter all the details',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ],
-        { cancelable: false }
-      )
+  const searchPlaces = () => {
+    if (!route.params) {
+      Alert.alert('Chưa chọn nơi muốn đi', '', [{ text: 'Đồng ý' }], {
+        cancelable: false,
+      })
     }
 
-    if (route.params && selectedDates) {
+    if (route.params) {
       navigation.navigate('Places', {
         selectedPlace,
         selectedDates,
-        place: place,
       })
     }
   }
@@ -125,12 +106,9 @@ const HomeScreen = () => {
               }}
             >
               <Feather name='search' size={24} color='black' />
-              <TextInput
-                placeholderTextColor='black'
-                placeholder={
-                  route?.params ? selectedPlace.name : 'Bạn muốn đi đâu?'
-                }
-              />
+              <Text>
+                {route?.params ? selectedPlace.name : 'Bạn muốn đi đâu?'}
+              </Text>
             </Pressable>
 
             {/* Selected Dates */}
@@ -161,6 +139,7 @@ const HomeScreen = () => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginRight: 'auto',
+                    color: 'black',
                   },
                   headerStyle: {
                     backgroundColor: '#003580',
@@ -174,18 +153,21 @@ const HomeScreen = () => {
                 }}
                 selectedBgColor='#0047AB'
                 customButton={(onConfirm) => customButton(onConfirm)}
-                onConfirm={(startDate, endDate) =>
+                onConfirm={(startDate, endDate) => {
                   setSelectedDates(startDate, endDate)
-                }
+                  console.log('Selected Dates:', startDate, endDate)
+                }}
                 allowFontScaling={false}
                 placeholder={'Bất cứ ngày nào'}
+                markText={' '}
+                returnFormat='YYYY-MM-DD'
                 mode={'range'}
               />
             </Pressable>
 
             {/* Search Button */}
             <Pressable
-              onPress={() => searchPlaces(route?.params.input)}
+              onPress={searchPlaces}
               style={{
                 paddingHorizontal: 10,
                 borderColor: '#FFC72C',

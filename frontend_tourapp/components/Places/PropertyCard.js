@@ -12,7 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { FontAwesome } from '@expo/vector-icons'
 
-const PropertyCard = ({ tour }) => {
+const PropertyCard = ({ tour, selectedDates }) => {
   const { width, height } = Dimensions.get('window')
   const navigation = useNavigation()
   return (
@@ -29,8 +29,8 @@ const PropertyCard = ({ tour }) => {
             // adults: adults,
             // children: children,
             // rooms: rooms,
-            // selectedDates: selectedDates,
             id: tour.id,
+            datesSearch: selectedDates,
           })
         }
         style={{ margin: 15, flexDirection: 'row', backgroundColor: 'white' }}

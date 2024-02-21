@@ -11,6 +11,9 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     avatar = CloudinaryField('avatar', null=False)
 
+    def __str__(self):
+        return self.username
+
 
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
@@ -19,9 +22,23 @@ class Admin(models.Model):
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
 
+    def __str__(self):
+        return self.user.__str__()
+
+    @property
+    def name(self):
+        return self.user.last_name + " " + self.user.first_name
+
 
 class Staff(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+
+    def __str__(self):
+        return self.user.__str__()
+
+    @property
+    def name(self):
+        return self.user.last_name + " " + self.user.first_name
 
 
 class BaseModel(models.Model):
@@ -35,15 +52,21 @@ class BaseModel(models.Model):
 class TouristPlace(models.Model):
     name = models.CharField(max_length=50, null=False)
 
+    def __str__(self):
+        return self.name
+
 
 class Tag(BaseModel):
     name = models.CharField(max_length=50, null=False)
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Tour(BaseModel):
     name = models.CharField(max_length=150, null=False)
-    main_image = CloudinaryField('main_image', null=False)
+    main_image = models.ImageField(upload_to='tours/%Y/%m', default=None)
     description = RichTextField(null=False)
     place = models.ForeignKey(TouristPlace, on_delete=models.CASCADE, null=False)
     is_active = models.BooleanField(default=True)
@@ -51,6 +74,9 @@ class Tour(BaseModel):
     child_price = models.IntegerField(null=False)
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name
 
 
 # That's not need
@@ -116,6 +142,9 @@ class News(BaseModel):
     content = RichTextField(null=False)
     author = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class NewsComment(BaseModel):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=False)
@@ -135,3 +164,6 @@ class ConfigKey(models.TextChoices):
 class Config(models.Model):
     key = models.CharField(max_length=100, choices=ConfigKey.choices, null=False)
     value = models.CharField(max_length=150, null=False)
+
+    def __str__(self):
+        return self.key

@@ -7,8 +7,7 @@ import {
   Pressable,
   Image,
 } from 'react-native'
-import DatePicker from 'react-native-date-ranges'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { pixelNormalize } from '../../utils/Normalise'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -23,23 +22,16 @@ const PropertyInfoScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
 
-  const [tour, setTour] = useState()
-  const [loading, setLoading] = useState(false)
-  console.log(tour)
-
-  const availableDates = [
-    '2022-12-01',
-    '2022-12-02',
-    '2022-12-03',
-    '2022-12-04',
-  ]
+  const [tour, setTour] = useState(null)
+  const [dateSelected, setDateSelected] = useState('')
+  const [availableDates, setAvailableDates] = useState({})
 
   // const tourId = route.params?.id
-  const tourId = 1
+  const tourId = 11
+  let datesSearch = route.params?.datesSearch
 
   useLayoutEffect(() => {
     if (tour) return
-    setLoading(true)
 
     navigation.setOptions({
       headerShown: true,
@@ -56,30 +48,81 @@ const PropertyInfoScreen = () => {
         shadowColor: 'transparent',
       },
     })
+  }, [])
 
+  useEffect(() => {
     const fetchTour = async () => {
       try {
         let url = endpoints['tour-detail'](tourId)
         let data = await API.get(url)
 
         setTour(data.data)
-        setLoading(false)
       } catch (err) {
-        setLoading(true)
         setTour(null)
         console.error(err)
       }
     }
-
     fetchTour()
+  }, [tourId])
+
+  useEffect(() => {
+    const calcAvailableDates = () => {
+      if (!tour) return
+
+      let availableDates = {}
+      const daysInWeek = tour.schedule.days_in_week
+      const excludesDay = tour.schedule.excludes_day
+
+      const startDate = new Date()
+      const endDate = new Date(startDate)
+      endDate.setMonth(endDate.getMonth() + 3)
+
+      for (
+        let d = new Date(startDate);
+        d <= endDate;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const dateStr = d.toISOString().split('T')[0]
+        if (
+          !excludesDay.includes(dateStr) &&
+          daysInWeek.includes(d.getDay() + 1)
+        ) {
+          availableDates[dateStr] = { marked: true, disabled: false }
+        }
+      }
+      setAvailableDates(availableDates)
+    }
+
+    calcAvailableDates()
   }, [tour])
 
-  // const difference = route.params?.oldPrice - route.params?.newPrice
-  // const offerPrice = (Math.abs(difference) / route.params?.oldPrice) * 100
+  useEffect(() => {
+    const setDateGo = () => {
+      let firstAvailableDate
+
+      if (datesSearch?.startDate && datesSearch?.endDate) {
+        const startDate = new Date(datesSearch.startDate)
+        const endDate = new Date(datesSearch.endDate)
+        for (let date in availableDates) {
+          const currentDate = new Date(date)
+
+          if (currentDate >= startDate && currentDate <= endDate) {
+            firstAvailableDate = date
+            break
+          }
+        }
+      } else firstAvailableDate = Object.keys(availableDates)[0]
+
+      if (firstAvailableDate) setDateSelected(firstAvailableDate)
+    }
+
+    setDateGo()
+  }, [availableDates])
+
   return (
     <>
       <SafeAreaView>
-        {!loading && tour && (
+        {tour && (
           <ScrollView>
             <Pressable
               style={{ flexDirection: 'row', flexWrap: 'wrap', margin: 10 }}
@@ -194,9 +237,17 @@ const PropertyInfoScreen = () => {
                   >
                     <Feather name='calendar' size={24} color='black' />
                     <Calendar
+                      onDayPress={(day) => {
+                        setDateSelected(day.dateString)
+                      }}
                       disabledByDefault={true}
                       markedDates={{
-                        ['2024-02-22']: { marked: true, disabled: false },
+                        ...availableDates,
+                      }}
+                      theme={{
+                        todayTextColor: '#68ba56',
+                        dayTextColor: '#00adf5',
+                        dayBackgroundColor: '#00adf5',
                       }}
                     />
                   </Pressable>
@@ -324,17 +375,23 @@ const PropertyInfoScreen = () => {
         </Text>
         <Pressable
           onPress={() =>
-            navigation.navigate('Rooms', {
-              // rooms: route.params?.availableRooms,
-              // oldPrice: route.params?.oldPrice,
-              // newPrice: route.params?.newPrice,
-              // name: route.params?.name,
-              // children: route.params?.children,
-              // adults: route.params?.adults,
-              // rating: route.params?.rating,
-              // startDate: route.params?.selectedDates.startDate,
-              // endDate: route.params?.selectedDates.endDate,
-            })
+            // navigation.navigate('Rooms', {
+            //   // rooms: route.params?.availableRooms,
+            //   // oldPrice: route.params?.oldPrice,
+            //   // newPrice: route.params?.newPrice,
+            //   // name: route.params?.name,
+            //   // children: route.params?.children,
+            //   // adults: route.params?.adults,
+            //   // rating: route.params?.rating,
+            //   // startDate: route.params?.selectedDates.startDate,
+            //   // endDate: route.params?.selectedDates.endDate,
+            // })
+            {
+              navigation.navigate('OrderTicket', {
+                screen: 'ConfirmOrder',
+                params: { tourId, dateSelected },
+              })
+            }
           }
           style={{
             backgroundColor: '#6CB4EE',

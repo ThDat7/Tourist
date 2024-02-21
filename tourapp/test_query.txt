@@ -13,3 +13,10 @@ serializer.data
 print(len(connection.queries))
 connection.queries
 
+
+
+cloudinary
+oauth2
+image handle
+api momo
+bookings screen

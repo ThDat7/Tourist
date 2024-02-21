@@ -50,8 +50,8 @@ const PlacesScreen = () => {
     const fetchTours = async () => {
       let url
       if (selectedPlace.type === 'tour')
-        url = endpoints['tour'](selectedPlace.id)
-      else url = endpoints['tourist-place'](selectedPlace.id)
+        url = endpoints['search-tour'](selectedPlace.id)
+      else url = endpoints['search-tourist-place'](selectedPlace.id)
       console.log(url)
 
       try {
@@ -70,22 +70,16 @@ const PlacesScreen = () => {
 
   return (
     <View>
-      <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingHorizontal: 20,
-          padding: 12,
-          backgroundColor: 'white',
-        }}
-      ></Pressable>
       {loading && <Text>Fetching places....</Text>}
       {data && !loading && (
         <ScrollView style={{ backgroundColor: '#F5F5F5' }}>
           <View>
             {data.tours.map((tour) => (
-              <PropertyCard key={tour.id} tour={tour} />
+              <PropertyCard
+                key={tour.id}
+                tour={tour}
+                selectedDates={selectedDates}
+              />
             ))}
           </View>
 

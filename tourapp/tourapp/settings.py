@@ -48,6 +48,16 @@ INSTALLED_APPS = [
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
+CKEDITOR_STORAGE_BACKEND = 'django.core.files.storage.FileSystemStorage'
+
+
+import cloudinary
+
+cloudinary.config(
+    cloud_name="dr2sclnyl",
+    api_key="248954445761623",
+    api_secret="aU7Lp9vkhojG1peX4dWTmy1jhLU"
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

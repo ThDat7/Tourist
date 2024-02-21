@@ -1,13 +1,18 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 
-from tours.views import SearchSuggestionView, TourSearchView, TouristPlaceSearchView, TourView, TourRatingsView, \
-    TourPricingView
+from tours import views
+
+router = routers.DefaultRouter()
+# router.register('customers', views.CustomerViewSet, basename='customers')
 
 urlpatterns = [
-    path('search/', SearchSuggestionView.as_view(), name='search'),
-    path('search-tour/<int:id>/', TourSearchView.as_view(), name='tour-search'),
-    path('search-tourist-place/<int:id>/', TouristPlaceSearchView.as_view(), name='tourist-place-search'),
-    path('tour/<int:id>/', TourView.as_view(), name='tour-detail'),
-    path('tour/<int:tour_id>/ratings/', TourRatingsView.as_view(), name='ratings'),
-    path('tour/<int:tour_id>/pricing/', TourPricingView.as_view(), name='tour-pricing')
+    path('', include(router.urls)),
+    path('search/', views.SearchSuggestionView.as_view(), name='search'),
+    path('search-tour/<int:id>/', views.TourSearchView.as_view(), name='tour-search'),
+    path('search-tourist-place/<int:id>/', views.TouristPlaceSearchView.as_view(), name='tourist-place-search'),
+    path('tour/<int:id>/', views.TourView.as_view(), name='tour-detail'),
+    path('tour/<int:tour_id>/ratings/', views.TourRatingsView.as_view(), name='ratings'),
+    path('tour/<int:tour_id>/pricing/', views.TourPricingView.as_view(), name='tour-pricing'),
+    path('customers/<int:user_id>', views.CustomerView.as_view(), name='customer-info'),
 ]
