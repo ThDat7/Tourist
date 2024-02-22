@@ -97,21 +97,21 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen
+        <Stack.Screen
           name='Login'
           component={LoginScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name='Register'
           component={RegisterScreen}
           options={{ headerShown: false }}
         /> */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name='Main'
           component={BottomTabs}
           options={{ headerShown: false }}
-        />
+        /> */}
         {/* <Stack.Screen
           name='Search'
           component={SearchScreen}
