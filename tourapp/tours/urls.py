@@ -14,5 +14,8 @@ urlpatterns = [
     path('tour/<int:id>/', views.TourView.as_view(), name='tour-detail'),
     path('tour/<int:tour_id>/ratings/', views.TourRatingsView.as_view(), name='ratings'),
     path('tour/<int:tour_id>/pricing/', views.TourPricingView.as_view(), name='tour-pricing'),
-    path('customers/<int:user_id>', views.CustomerView.as_view(), name='customer-info'),
+    path('customers/<int:customer_id>/', views.CustomerView.as_view(), name='customer-info'),
+    path('customers/<int:customer_id>/tours-history/', views.BookedTourView.as_view()),
+    path('customers/rate-booking/<int:booking_id>/', views.RateBookingView.as_view()),
+    path('order-booking/', views.OrderBookingView.as_view())
 ]

@@ -8,12 +8,6 @@ from tours.models import Tour, Customer, News, Rating, Booking, Config, Schedule
 
 
 # Register your models here.
-class TourAppAdminSite(admin.AdminSite):
-    site_header = 'TourApp'
-
-
-admin_site = TourAppAdminSite(name='TourApp')
-
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['pk', 'last_name', 'first_name', 'username']
@@ -98,9 +92,9 @@ class BookingAdmin(admin.ModelAdmin):
 
 
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'customer', 'tour', 'rate']
-    search_fields = ['name', 'customer', 'tour', 'rate', 'cmt']
-    list_filter = ['id', 'rate', 'tour']
+    list_display = ['pk', 'booking', 'rate']
+    search_fields = ['name', 'booking', 'rate', 'cmt']
+    list_filter = ['id', 'rate']
 
 
 class TourCommentAdmin(admin.ModelAdmin):
@@ -136,15 +130,15 @@ class ConfigAdmin(admin.ModelAdmin):
     list_filter = ['id', 'key']
 
 
-admin_site.register(Tour, TourAdmin)
-admin_site.register(Customer)
-admin_site.register(Config, ConfigAdmin)
-admin_site.register(News, NewsAdmin)
-admin_site.register(Rating, RatingAdmin)
-admin_site.register(Booking, BookingAdmin)
-admin_site.register(Tag, TagAdmin)
-admin_site.register(TouristPlace, TouristPlaceAdmin)
-admin_site.register(User, UserAdmin)
-admin_site.register(TourComment, TourCommentAdmin)
-admin_site.register(NewsComment, NewsCommentAdmin)
-admin_site.register(ScheduleRecurringWeekly, ScheduleRecurringWeeklyAdmin)
+admin.site.register(Tour, TourAdmin)
+admin.site.register(Customer)
+admin.site.register(Config, ConfigAdmin)
+admin.site.register(News, NewsAdmin)
+admin.site.register(Rating, RatingAdmin)
+admin.site.register(Booking, BookingAdmin)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(TouristPlace, TouristPlaceAdmin)
+admin.site.register(User, UserAdmin)
+admin.site.register(TourComment, TourCommentAdmin)
+admin.site.register(NewsComment, NewsCommentAdmin)
+admin.site.register(ScheduleRecurringWeekly, ScheduleRecurringWeeklyAdmin)

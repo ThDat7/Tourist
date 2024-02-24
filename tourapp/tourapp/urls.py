@@ -14,13 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import debug_toolbar
+from dj_rest_auth.jwt_auth import get_refresh_view
+from dj_rest_auth.views import LogoutView
 from django.contrib import admin
 from django.urls import path, include, re_path
+from rest_framework_simplejwt.views import TokenVerifyView
 
-from tours.admin import admin_site
+from tours.views import GoogleLoginView
 
 urlpatterns = [
     path('', include('tours.urls')),
-    path('admin/', admin_site.urls),
+    path('admin/', admin.site.urls),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    path('login/', GoogleLoginView.as_view()),
+    path('logout/', LogoutView.as_view()),
+    path('token/verify/', TokenVerifyView.as_view()),
+    path('token/refresh/', get_refresh_view().as_view()),
 ]

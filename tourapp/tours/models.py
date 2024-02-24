@@ -79,10 +79,9 @@ class Tour(BaseModel):
         return self.name
 
 
-# That's not need
-class ScheduleRecurringDaily(models.Model):
+class SavedTours(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=False)
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, null=False)
-    time = models.DateTimeField(null=False)
 
 
 class ScheduleRecurringWeekly(models.Model):
@@ -112,15 +111,19 @@ class Booking(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=False)
     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, null=False)
 
-    time = models.DateTimeField(auto_now_add=True)
+    time_start = models.DateTimeField(null=False)
+    time_order = models.DateTimeField(auto_now_add=True)
     adult_price = models.IntegerField(null=False)
     child_price = models.IntegerField(null=False)
+
+    adult_count = models.IntegerField(null=False)
+    child_count = models.IntegerField(null=False)
+
     status = models.CharField(max_length=50, choices=BookingStatus, default=BookingStatus.UNPAID)
 
 
 class Rating(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=False)
-    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, null=False)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, null=False)
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -160,10 +163,15 @@ class NewsLike(models.Model):
 class ConfigKey(models.TextChoices):
     AGE_FOR_CHILD_PRICES = "CHILD_AGE", _("Age for child prices")
 
+    GMAIL_USERNAME = "GMAIL_USERNAME", _("Gmail username")
+    APP_PASS_GMAIL = "APP_PASS_GMAIL", _("App password for gmail")
+    CONFIRM_EMAIL_SUBJECT = "CONFIRM_EMAIL_SUBJECT", _("Confirm email subject")
+    CONFIRM_EMAIL_MESSAGE = "CONFIRM_EMAIL_MESSAGE", _("Confirm email message")
+
 
 class Config(models.Model):
     key = models.CharField(max_length=100, choices=ConfigKey.choices, null=False)
-    value = models.CharField(max_length=150, null=False)
+    value = models.CharField(max_length=500, null=False)
 
     def __str__(self):
         return self.key

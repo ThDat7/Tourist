@@ -2,7 +2,7 @@ from django.db.models import Avg
 from rest_framework import serializers
 
 from tours.models import Tour, TouristPlace, Rating, ScheduleRecurringInWeek, ScheduleExcludeDate, \
-    ScheduleRecurringWeekly, Customer
+    ScheduleRecurringWeekly, Customer, Booking, SavedTours
 
 
 class TourSearchSuggestionSerializer(serializers.ModelSerializer):
@@ -104,3 +104,30 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         # fields = ['lastname', 'firstname', 'email', 'numberphone']
         fields = ['lastname', 'firstname', 'email']
+
+
+class BookingSerializer(serializers.ModelSerializer):
+    tour_name = serializers.CharField(source='tour.name')
+    tour_price = serializers.FloatField(source='tour.adult_price')
+    tour_main_image = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+
+    def get_total(self, booking):
+        return booking.adult_count * booking.tour.adult_price + booking.child_count * booking.tour.child_price
+
+    def get_tour_main_image(self, booking):
+        if booking.tour.main_image:
+            request = self.context.get('request')
+            return request.build_absolute_uri('/static/%s' % booking.tour.main_image.name)
+
+    class Meta:
+        model = Booking
+        fields = '__all__'
+
+
+class SavedToursSerializer(serializers.ModelSerializer):
+    tour = TourSearchSerializer()
+
+    class Meta:
+        model = SavedTours
+        fields = ['tour']
