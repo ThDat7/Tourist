@@ -3,9 +3,43 @@
     "name": "frontend_tourapp",
     "slug": "frontend_tourapp",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  },
-  "name": "frontend_tourapp"
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "plugins": ["@react-native-google-signin/google-signin"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.thanhhdatt123.frontendtourapp",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.445922909728-pt77tq64v03pq4f6cdehrn3mp259hu5o"
+            ]
+          }
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.thanhhdatt123.frontendtourapp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ff45d50a-2862-4480-9730-1a21bb64d386"
+      }
+    }
+  }
 }

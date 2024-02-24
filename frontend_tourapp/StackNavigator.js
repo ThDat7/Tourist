@@ -9,7 +9,9 @@ import { Ionicons } from '@expo/vector-icons'
 import SavedScreen from './components/Favorites/SavedScreen'
 import BookingScreen from './components/Notifications/BookingScreen'
 import ProfileScreen from './components/User/ProfileScreen'
+import BookedToursScreen from './components/User/BookedToursScreen'
 import { NavigationContainer } from '@react-navigation/native'
+import { FontAwesome } from '@expo/vector-icons'
 import SearchScreen from './components/Search/SearchScreen'
 import PlacesScreen from './components/Places/PlacesScreen'
 import PropertyInfoScreen from './components/Places/PropertyInfoScreen'
@@ -28,7 +30,7 @@ const StackNavigator = () => {
   function BottomTabs() {
     return (
       <Tab.Navigator>
-        {/* <Tab.Screen
+        <Tab.Screen
           name='Home'
           component={HomeScreen}
           options={{
@@ -75,7 +77,22 @@ const StackNavigator = () => {
                 />
               ),
           }}
-        /> */}
+        />
+
+        <Tab.Screen
+          name='BookedTours'
+          component={BookedToursScreen}
+          options={{
+            tabBarLabel: 'BookedTours',
+            headerShown: false,
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <FontAwesome name='history' size={24} color='#003580' />
+              ) : (
+                <FontAwesome name='history' size={24} color='black' />
+              ),
+          }}
+        />
 
         <Tab.Screen
           name='Profile'
@@ -107,11 +124,11 @@ const StackNavigator = () => {
           component={RegisterScreen}
           options={{ headerShown: false }}
         /> */}
-        {/* <Stack.Screen
+        <Stack.Screen
           name='Main'
           component={BottomTabs}
           options={{ headerShown: false }}
-        /> */}
+        />
         {/* <Stack.Screen
           name='Search'
           component={SearchScreen}
@@ -121,10 +138,7 @@ const StackNavigator = () => {
         {/* <Stack.Screen name='TourDetail' component={PropertyInfoScreen} /> */}
         {/* <Stack.Screen name='Ratings' component={RatingsScreen} /> */}
         {/* <Stack.Screen name='OrderTicket' component={OrderTicketScreen} /> */}
-        {/* <Stack.Screen
-          name='ConfirmOrder'
-          component={ConfirmOrderScreen}
-        /> */}
+        <Stack.Screen name='ConfirmOrder' component={ConfirmOrderScreen} />
         {/* <Stack.Screen name='Payment' component={PaymentScreen} /> */}
         <Stack.Screen name='Rooms' component={RoomsScreen} />
         <Stack.Screen name='User' component={UserScreen} />

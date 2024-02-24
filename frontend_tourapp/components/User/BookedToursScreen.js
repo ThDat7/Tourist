@@ -1,63 +1,150 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useLayoutEffect, useState, useEffect } from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  ScrollView,
+  Pressable,
+  Image,
+} from 'react-native'
+import DatePicker from 'react-native-date-ranges'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { Octicons } from '@expo/vector-icons'
-import { Ionicons } from '@expo/vector-icons'
-import { FontAwesome5 } from '@expo/vector-icons'
-import PropertyCard from './PropertyCard'
-import { BottomModal } from 'react-native-modals'
-import { ModalFooter } from 'react-native-modals'
-import { SlideAnimation } from 'react-native-modals'
-import { ModalTitle } from 'react-native-modals'
-import { FontAwesome } from '@expo/vector-icons'
-import { Entypo } from '@expo/vector-icons'
-import { ModalContent } from 'react-native-modals'
+import { pixelNormalize } from '../../utils/Normalise'
+import { MaterialIcons } from '@expo/vector-icons'
+import Amenities from '../../utils/Amenities'
 import API, { endpoints } from '../../configs/API'
-// import { collection, getDocs } from 'firebase/firestore'
-// import { db } from '../firebase'
+import { FontAwesome } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
+import { Feather } from '@expo/vector-icons'
 
-const PlacesScreen = () => {
-  const navigation = useNavigation()
+const BookedToursScreen = () => {
   const route = useRoute()
+  const navigation = useNavigation()
 
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState()
+  const [books, setbooks] = useState([])
+
+  // const bookId = route.params?.id
+  const userId = 9
+
+  useLayoutEffect(() => {
+    if (books.length > 0) return
+
+    navigation.setOptions({
+      headerShown: true,
+      title: `header nameeeeee`,
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
+      },
+      headerStyle: {
+        backgroundColor: '#003580',
+        height: 110,
+        borderBottomColor: 'transparent',
+        shadowColor: 'transparent',
+      },
+    })
+  }, [])
 
   useEffect(() => {
-    if (data) return
-    setLoading(true)
-
-    const fetchTours = async () => {
-      let url
-      if (selectedPlace.type === 'tour')
-        url = endpoints['search-tour'](selectedPlace.id)
-      else url = endpoints['search-tourist-place'](selectedPlace.id)
-      console.log(url)
-
+    const fetchBooks = async () => {
       try {
-        let res = await API.get(url)
-        console.log(url)
-        setData(res.data)
-        setLoading(false)
-      } catch (error) {
-        setData(null)
-        setLoading(true)
-        console.error(error)
+        let url = endpoints['tours-history'](userId)
+        let data = await API.get(url)
+
+        setbooks(data.data)
+      } catch (err) {
+        setbooks([])
+        console.error(err)
       }
     }
-    fetchTours()
-  }, [data])
+
+    fetchBooks()
+  }, [userId])
 
   return (
-    <View>
-      {loading && <Text>Fetching places....</Text>}
-      {data && !loading && (
-        <ScrollView style={{ backgroundColor: '#F5F5F5' }}></ScrollView>
-      )}
-    </View>
+    <>
+      <SafeAreaView>
+        {books && (
+          <ScrollView style={{ backgroundColor: '#d2d4d6' }}>
+            {books.map((book) => (
+              <View
+                key={book.id}
+                style={{
+                  padding: 20,
+                  paddingBottom: 17,
+                  paddingRight: 10,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: '#737272',
+                  marginBottom: 10,
+                  backgroundColor: 'white',
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    width: '100%',
+                    borderColor: 'black',
+                    borderWidth: 0.2,
+                    padding: 10,
+                  }}
+                >
+                  <Image
+                    style={{
+                      width: '30%',
+                      height: 100,
+                      resizeMode: 'cover',
+                      marginRight: '5%',
+                    }}
+                    source={{
+                      uri: 'http://127.0.0.1:8000/static/tours/1111111.jpg',
+                    }}
+                  ></Image>
+                  <View
+                    style={{
+                      width: '63%',
+                    }}
+                  >
+                    <Text>{book.tour_name}</Text>
+                    <Text
+                      style={{
+                        marginTop: 50,
+                        marginLeft: 'auto',
+                      }}
+                    >
+                      Giá người lớn: {book.tour_price} đ
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={{ marginLeft: 'auto', marginTop: 10 }}>
+                  <Text>Tổng tiền: {book.total} đ</Text>
+                </View>
+
+                <View style={{}}>
+                  <Text>
+                    Tinh trang:{' '}
+                    {book.status == 'COMPLETED' && (
+                      <Text style={{ color: 'green' }}>Đã đi</Text>
+                    )}
+                    {book.status == 'UNPAID' && (
+                      <Text style={{ color: 'red' }}>Chưa thanh toán</Text>
+                    )}
+                    {book.status == 'WAITING_FOR_DEPARTURE' && (
+                      <Text style={{ color: 'blue' }}>Chờ khởi hành</Text>
+                    )}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        )}
+      </SafeAreaView>
+    </>
   )
 }
 
-export default PlacesScreen
+export default BookedToursScreen
 
 const styles = StyleSheet.create({})

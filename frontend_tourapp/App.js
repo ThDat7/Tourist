@@ -1,18 +1,19 @@
-import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import { ModalPortal } from 'react-native-modals'
-import { Provider } from 'react-redux'
 import StackNavigator from './StackNavigator'
-import store from './store'
+import UserReducer, { initialUserState } from './reducers/UserReducer'
+import { useReducer } from 'react'
+import UserContext from './configs/UserContext'
 
 export default function App() {
+  const [user, dispatch] = useReducer(UserReducer, initialUserState)
   return (
-    <>
-      <Provider store={store}>
+    <UserContext.Provider value={[user, dispatch]}>
+      <>
         <StackNavigator />
         <ModalPortal />
-      </Provider>
-    </>
+      </>
+    </UserContext.Provider>
   )
 }
 

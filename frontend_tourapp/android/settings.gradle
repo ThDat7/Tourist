@@ -1,4 +1,4 @@
-rootProject.name = 'frontendtourapp'
+rootProject.name = 'frontend_tourapp'
 
 dependencyResolutionManagement {
   versionCatalogs {
