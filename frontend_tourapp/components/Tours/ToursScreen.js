@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import PropertyCard from './PropertyCard'
 import API, { endpoints } from '../../configs/API'
 
-const PlacesScreen = () => {
+const ToursScreen = () => {
   const navigation = useNavigation()
   const route = useRoute()
 
@@ -56,7 +56,7 @@ const PlacesScreen = () => {
 
   return (
     <View>
-      {loading && <Text>Fetching places....</Text>}
+      {loading && <Text>Fetching tours....</Text>}
       {data && !loading && (
         <ScrollView style={{ backgroundColor: '#F5F5F5' }}>
           <View>
@@ -85,6 +85,6 @@ const PlacesScreen = () => {
   )
 }
 
-export default PlacesScreen
+export default ToursScreen
 
 const styles = StyleSheet.create({})

@@ -18,7 +18,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 import { Calendar } from 'react-native-calendars'
 
-const PropertyInfoScreen = () => {
+const TourInfoScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
 
@@ -339,6 +339,6 @@ const PropertyInfoScreen = () => {
   )
 }
 
-export default PropertyInfoScreen
+export default TourInfoScreen
 
 const styles = StyleSheet.create({})

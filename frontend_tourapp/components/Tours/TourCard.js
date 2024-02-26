@@ -20,15 +20,6 @@ const PropertyCard = ({ tour, selectedDates }) => {
       <Pressable
         onPress={() =>
           navigation.navigate('TourDetail', {
-            // name: property.name,
-            // rating: property.rating,
-            // oldPrice: property.oldPrice,
-            // newPrice: property.newPrice,
-            // photos: property.photos,
-            // availableRooms: property.rooms,
-            // adults: adults,
-            // children: children,
-            // rooms: rooms,
             id: tour.id,
             datesSearch: selectedDates,
           })
