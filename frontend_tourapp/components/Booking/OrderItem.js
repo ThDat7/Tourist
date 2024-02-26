@@ -17,9 +17,7 @@ const OrderItem = ({
       <Text>Fake image</Text>
     </View>
     <View style={{}}>
-      <Text style={{ fontSize: 18, fontWeight: 700 }}>
-        {tourName} aaaa aaaa aaaa aaa aaa aaa aaa aaa
-      </Text>
+      <Text style={{ fontSize: 18, fontWeight: 700 }}>{tourName}</Text>
       <Text>{startTime}</Text>
       <View
         style={{

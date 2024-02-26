@@ -20,6 +20,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import AuthAPI from '../../configs/AuthApi'
 
 const ConfirmOrderScreen = () => {
   const route = useRoute()
@@ -28,23 +29,17 @@ const ConfirmOrderScreen = () => {
   const [tour, setTour] = useState(null)
   const [customerInfo, setCustomerInfo] = useState(null)
 
-  // const tourId = route.params?.id
-  // const dateSelected = route.params?.dateSelected
-  // const adultCount = route.params?.adultCount
-  // const childCount = route.params?.childCount
-
-  const tourId = 11
-  const dateSelected = '2024-02-25'
-  const adultCount = 2
-  const childCount = 1
-  const customerId = 1
+  const tourId = route.params?.tourId
+  const dateSelected = route.params?.dateSelected
+  const adultCount = route.params?.adultCount
+  const childCount = route.params?.childCount
 
   useLayoutEffect(() => {
     if (tour && customerInfo) return
 
     navigation.setOptions({
       headerShown: true,
-      title: `header nameeeeee`,
+      title: `Xác nhận`,
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -66,8 +61,7 @@ const ConfirmOrderScreen = () => {
         let response = await API.get(url)
         setTour(response.data)
 
-        url = endpoints['customer-info'](customerId)
-        response = await API.get(url)
+        response = await AuthAPI.get(endpoints['customer-info'])
         setCustomerInfo(response.data)
       } catch (err) {
         setTour(null)
@@ -77,7 +71,24 @@ const ConfirmOrderScreen = () => {
     }
 
     fetchData()
-  }, [tourId, customerId])
+  }, [tourId])
+
+  const payment = async () => {
+    await AuthAPI.post(endpoints['order-booking'], {
+      tour_id: tourId,
+      date_start: dateSelected,
+      adult_count: adultCount,
+      child_count: childCount,
+    })
+    // navigation.navigate('Payment', {
+    //   tourId,
+    //   dateSelected,
+    //   adultCount,
+    //   childCount,
+    // })
+
+    navigation.navigate('Home')
+  }
 
   return (
     <>
@@ -104,16 +115,9 @@ const ConfirmOrderScreen = () => {
             </View>
             <View style={{ alignItems: 'center', marginTop: 30 }}>
               <Pressable
-                onPress={() =>
-                  navigation.navigate('Payment', {
-                    tourId,
-                    dateSelected,
-                    adultCount,
-                    childCount,
-                  })
-                }
+                onPress={payment}
                 style={{
-                  backgroundColor: '#6CB4EE',
+                  backgroundColor: '#007FFF',
                   width: '40%',
                   padding: 10,
                   borderRadius: 7,

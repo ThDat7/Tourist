@@ -37,7 +37,7 @@ const PaymentScreen = () => {
 
     navigation.setOptions({
       headerShown: true,
-      title: `Th 5, 22 thg 2`,
+      title: `Thanh toán`,
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',

@@ -8,16 +8,12 @@ import {
   Image,
   TextInput,
 } from 'react-native'
-import DatePicker from 'react-native-date-ranges'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { pixelNormalize } from '../../utils/Normalise'
-import { MaterialIcons } from '@expo/vector-icons'
-import Amenities from '../../utils/Amenities'
 import API, { endpoints } from '../../configs/API'
-import { FontAwesome } from '@expo/vector-icons'
-import { AntDesign } from '@expo/vector-icons'
-import { Feather } from '@expo/vector-icons'
+import AuthApi from '../../configs/AuthApi'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 const ProfileScreen = () => {
   const route = useRoute()
@@ -35,7 +31,7 @@ const ProfileScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: `header nameeeeee`,
+      title: `Thông tin tài khoản`,
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -54,8 +50,9 @@ const ProfileScreen = () => {
     setLoading(true)
     const fetchCustomerInfo = async () => {
       try {
-        let url = endpoints['customer-info'](userId)
-        let response = await API.get(url)
+        let response = await AuthApi.get(endpoints['customer-info'])
+
+        console.log(response)
 
         setLastname(response.data.lastname)
         setFirstname(response.data.firstname)
@@ -77,12 +74,20 @@ const ProfileScreen = () => {
 
     fetchCustomerInfo()
   }, [userId])
+
+  const logout = async () => {
+    await API.post(endpoints['logout'])
+    await AsyncStorage.removeItem('access_token')
+
+    await GoogleSignin.revokeAccess()
+    await GoogleSignin.signOut()
+    navigation.navigate('Login')
+  }
   return (
     <>
       <SafeAreaView>
         {!loading && (
           <ScrollView>
-            <Text>Profile</Text>
             <View>
               <Image></Image>
             </View>
@@ -108,8 +113,8 @@ const ProfileScreen = () => {
             <View style={{ alignItems: 'center', marginTop: 30 }}>
               <Pressable
                 onPress={() =>
-                  API.put(
-                    endpoints['customer-info'](userId),
+                  AuthApi.put(
+                    endpoints['customer-info'],
                     {
                       lastname: lastname,
                       firstname: firstname,
@@ -137,6 +142,27 @@ const ProfileScreen = () => {
               >
                 <Text style={{ color: 'white', fontSize: 16, fontWeight: 500 }}>
                   Lưu
+                </Text>
+              </Pressable>
+            </View>
+
+            <View style={{ alignItems: 'center', marginTop: 30 }}>
+              <Pressable
+                onPress={logout}
+                style={{
+                  flexDirection: 'row',
+                  borderColor: '#4f4f4f',
+                  borderWidth: 0.5,
+                  borderRadius: 5,
+                  width: 130,
+                  height: 45,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'red',
+                }}
+              >
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 500 }}>
+                  Đăng xuất
                 </Text>
               </Pressable>
             </View>

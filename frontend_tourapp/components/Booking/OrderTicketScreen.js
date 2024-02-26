@@ -28,8 +28,7 @@ const OrderTicketScreen = () => {
   const [adultCount, setAdultCount] = useState(2)
   const [childCount, setChildCount] = useState(0)
 
-  // const tourId = route.params?.id
-  const tourId = 1
+  const tourId = route.params?.tourId
 
   useLayoutEffect(() => {
     if (tourPricing) return
@@ -37,7 +36,7 @@ const OrderTicketScreen = () => {
 
     navigation.setOptions({
       headerShown: true,
-      title: `Th 5, 22 thg 2`,
+      title: `Đặt vé`,
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -136,6 +135,8 @@ const OrderTicketScreen = () => {
                 <Pressable
                   onPress={() =>
                     navigation.navigate('ConfirmOrder', {
+                      tourId,
+                      dateSelected: route.params?.dateSelected,
                       adultCount,
                       childCount,
                     })

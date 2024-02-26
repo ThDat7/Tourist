@@ -36,12 +36,21 @@ if __name__ == '__main__':
 
     def create_users(num_users=20):
         for _ in range(num_users):
+            first_name = fake.first_name()
+            last_name = fake.last_name()
             username = fake.user_name()
             email = fake.email()
             password = make_password(fake.password())
             avatar_url = fake.image_url()
-            user = User.objects.create(username=username, email=email, password=password, avatar=avatar_url)
-            print(f"Created User: {user.username}, Password: {fake.password()}")
+
+            User.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                email=email,
+                password=password,
+                avatar=avatar_url
+            )
 
 
     def create_admins(num_admins=1):
@@ -73,8 +82,11 @@ if __name__ == '__main__':
             username = fake.user_name()
             email = fake.email()
             password = make_password(fake.password())
+            first_name = fake.first_name()
+            last_name = fake.last_name()
             avatar_url = fake.image_url()
-            customer_user = User.objects.create(username=username, email=email, password=password, avatar=avatar_url)
+            customer_user = User.objects.create(username=username, email=email, password=password, last_name=last_name,
+                                                first_name=first_name, avatar=avatar_url)
             Customer.objects.create(user=customer_user)
             print(f"Created Customer: {customer_user.username}, Password: {fake.password()}")
 
@@ -104,16 +116,27 @@ if __name__ == '__main__':
             place = random.choice(places)
             tour_author = random.choice(staff_users)
 
-            # 1111111.jpg
+            # Tạo tên tour ngắn hơn và sinh động hơn
+            tour_name = " ".join(fake.words(nb=random.randint(2, 4))).capitalize()
 
             tour = Tour.objects.create(
-                name=fake.company(),
+                name=tour_name,
                 description=fake.text(),
                 place=place,
                 adult_price=random.randint(100, 500),
                 child_price=random.randint(50, 250),
                 author=tour_author
             )
+
+            # Chọn ngẫu nhiên một số lượng tag cho tour
+            num_tags = random.randint(1, 3)
+            selected_tags = random.sample(list(tags), min(num_tags, len(tags)))
+
+            # Thêm các tag đã chọn cho tour
+            for tag in selected_tags:
+                tour.tags.add(tag)
+
+            tour.save()
 
 
     def create_saved_tours(num_saved_tours=50):
@@ -132,16 +155,13 @@ if __name__ == '__main__':
             if not ScheduleRecurringWeekly.objects.filter(tour=tour).exists():
                 starting_date = fake.date_time_this_year()
                 time = fake.time()
-                ScheduleRecurringWeekly.objects.create(tour=tour, starting_date=starting_date, time=time)
+                recurring_schedule = ScheduleRecurringWeekly.objects.create(tour=tour, starting_date=starting_date,
+                                                                            time=time)
+
+                days = random.sample(range(1, 8), random.randint(1, 4))
+                for day in days:
+                    ScheduleRecurringInWeek.objects.create(schedule=recurring_schedule, day_in_week=day)
                 print(f"Created ScheduleRecurringWeekly for Tour: {tour.name}")
-
-
-    def create_schedule_recurring_in_week(num_schedules=5):
-        weekly_schedules = ScheduleRecurringWeekly.objects.all()
-        for _ in range(num_schedules):
-            weekly_schedule = random.choice(weekly_schedules)
-            ScheduleRecurringInWeek.objects.create(schedule=weekly_schedule, day_in_week=random.randint(1, 7))
-            print(f"Created ScheduleRecurringInWeek for Tour: {weekly_schedule.tour.name}")
 
 
     def create_schedule_exclude_dates(num_dates=5):
@@ -310,7 +330,6 @@ if __name__ == '__main__':
     create_tags()
     create_tours()
     create_schedule_recurring_weekly()
-    create_schedule_recurring_in_week()
     create_schedule_exclude_dates()
     create_bookings()
     create_ratings()

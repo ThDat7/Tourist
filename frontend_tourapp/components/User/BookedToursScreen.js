@@ -32,7 +32,7 @@ const BookedToursScreen = () => {
 
     navigation.setOptions({
       headerShown: true,
-      title: `header nameeeeee`,
+      title: `Tour đã đặt`,
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -50,7 +50,7 @@ const BookedToursScreen = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        let url = endpoints['tours-history'](userId)
+        let url = endpoints['tours-history']
         let data = await API.get(url)
 
         setbooks(data.data)

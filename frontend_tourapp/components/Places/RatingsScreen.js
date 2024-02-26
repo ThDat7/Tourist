@@ -25,8 +25,7 @@ const RatingsScreen = () => {
   const [ratings, setRatings] = useState([])
   const [loading, setLoading] = useState(false)
 
-  // const tourId = route.params?.id
-  const tourId = 7
+  const tourId = route.params?.tourId
 
   useLayoutEffect(() => {
     if (ratings.length > 0) return
@@ -34,7 +33,7 @@ const RatingsScreen = () => {
 
     navigation.setOptions({
       headerShown: true,
-      title: `header nameeeeee`,
+      title: `Đánh giá`,
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -67,8 +66,6 @@ const RatingsScreen = () => {
 
   console.log(ratings)
 
-  // const difference = route.params?.oldPrice - route.params?.newPrice
-  // const offerPrice = (Math.abs(difference) / route.params?.oldPrice) * 100
   return (
     <>
       <SafeAreaView>
@@ -97,7 +94,7 @@ const RatingsScreen = () => {
                       source={{ uri: rating.customer_info.avatar }}
                     />
                     <Text style={{ fontWeight: '500', fontSize: 18 }}>
-                      Customer name
+                      {rating.customer_info.name}
                     </Text>
                     <Text>1 năm trước</Text>
                   </View>

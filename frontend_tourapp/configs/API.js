@@ -7,8 +7,9 @@ export const endpoints = {
   'tour-detail': (id) => `/tour/${id}`,
   ratings: (tourId) => `/tour/${tourId}/ratings`,
   'tour-pricing': (tourId) => `/tour/${tourId}/pricing`,
-  'customer-info': (customerId) => `/customers/${customerId}`,
-  'tours-history': (customreId) => `/customers/${customreId}/tours-history`,
+  'customer-info': '/customers/',
+  'tours-history': '/customers/tours-history/',
+  'order-booking': '/order-booking/',
   login: '/login/',
   logout: '/logout/',
   'verify-token': '/token/verify/',
@@ -21,5 +22,5 @@ export default axios.create({
     'content-type': 'application/json',
   },
   timeout: 5000,
-  withCredentials: true,
+  withCredentials: false,
 })

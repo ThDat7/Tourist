@@ -27,7 +27,7 @@ const HomeScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: 'Booking.com',
+      title: 'Tour App',
       headerTitleStyle: {
         fontSize: 20,
         fontWeight: 'bold',

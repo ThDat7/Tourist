@@ -1,13 +1,17 @@
 import { StyleSheet, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin'
-import { login } from '../../reducers/AuthActions'
+import UserContext from '../../configs/UserContext'
+import AuthAPI from '../../configs/AuthApi'
+import API, { endpoints } from '../../configs/API'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginScreen = () => {
+  const [, dispatch] = useContext(UserContext)
   const navigation = useNavigation()
 
   const configureGoogleSigIn = () => {
@@ -23,7 +27,21 @@ const LoginScreen = () => {
 
   const signIn = async () => {
     try {
-      await login()
+      await GoogleSignin.hasPlayServices()
+      await GoogleSignin.signIn()
+      const token = await GoogleSignin.getTokens()
+      let response = await API.post(endpoints['login'], {
+        access_token: token.accessToken,
+      })
+
+      await AsyncStorage.setItem('access_token', response.data.access)
+      await AsyncStorage.setItem('refresh_token', response.data.refresh)
+
+      dispatch({
+        type: 'LOGIN',
+        payload: { id: response.data.pk, name: response.data.name },
+      })
+
       navigation.navigate('Main')
     } catch (e) {
       console.log(e)

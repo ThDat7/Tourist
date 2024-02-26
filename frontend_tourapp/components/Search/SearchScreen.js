@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   TextInput,
   FlatList,
   Pressable,
@@ -18,6 +17,7 @@ import { useNavigation } from '@react-navigation/native'
 import SearchResults from '../../utils/SearchResults'
 import API, { endpoints } from '../../configs/API'
 import axios from 'axios'
+import { SafeAreaView } from 'react-native-safe-area-context'
 // import { collection, getDocs } from "firebase/firestore";
 // import { db } from "../firebase";
 
@@ -28,10 +28,8 @@ const SearchScreen = () => {
 
   const debounceSearch = debounce(async (query) => {
     let url = endpoints['search'](query)
-    console.log(url)
     try {
       let res = await API.get(url)
-      console.log(searchResults)
       setSearchResults(res.data)
     } catch (error) {
       setSearchResults(null)
@@ -43,10 +41,8 @@ const SearchScreen = () => {
     const search = async () => {
       if (query) {
         let url = endpoints['search'](query)
-        console.log(url)
         try {
           let res = await API.get(url)
-          console.log(searchResults)
           setSearchResults(res.data)
         } catch (error) {
           setSearchResults(null)
@@ -75,7 +71,8 @@ const SearchScreen = () => {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder='Enter Your Destination'
+          placeholder='Tìm nơi bạn muốn đi'
+          autoFocus={true}
         />
         <Feather name='search' size={22} color='black' />
       </View>

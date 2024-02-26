@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
@@ -34,19 +36,16 @@ class SearchSuggestionView(APIView):
         serializer = SearchSuggestionSerializer(data)
         return Response(serializer.data)
 
-    def get_permissions(self):
-        return [permissions.IsAuthenticated()]
-
 
 class TourSearchView(APIView):
     def get(self, request, id, format=None):
         tour = Tour.objects.filter(pk=id).annotate(
-            rating_count=Count('rating'),
-            avg_rating=Avg('rating__rate')
+            rating_count=Count('booking__rating'),
+            avg_rating=Avg('booking__rating__rate')
         ).first()
         related_tours = Tour.objects.filter(place=tour.place).exclude(pk=id).annotate(
-            rating_count=Count('rating'),
-            avg_rating=Avg('rating__rate')
+            rating_count=Count('booking__rating'),
+            avg_rating=Avg('booking__rating__rate')
         )
 
         data = {
@@ -60,8 +59,8 @@ class TourSearchView(APIView):
 class TouristPlaceSearchView(APIView):
     def get(self, request, id, format=None):
         tours = Tour.objects.filter(place__id=id).annotate(
-            rating_count=Count('rating'),
-            avg_rating=Avg('rating__rate')
+            rating_count=Count('booking__rating'),
+            avg_rating=Avg('booking__rating__rate')
         )
         data = {
             'tours': TourSearchSerializer(tours, many=True).data
@@ -82,25 +81,27 @@ class TourView(APIView):
 
 class TourRatingsView(APIView):
     def get(self, request, tour_id, format=None):
-        ratings = Rating.objects.filter(tour_id=tour_id).select_related('customer__user')
+        ratings = Rating.objects.filter(booking__tour_id=tour_id).select_related('booking__customer__user')
         serializer = RatingSerializer(ratings, many=True)
         return Response(serializer.data)
 
 
 class TourPricingView(APIView):
     def get(self, request, tour_id, format=None):
-        tour = Tour.objects.filter(pk=tour_id).select_related('schedulerecurringweekly')
+        tour = Tour.objects.get(pk=tour_id)
         serializer = TourPricingSerializer(tour)
         return Response(serializer.data)
 
 
 class CustomerView(APIView):
-    def get(self, request, customer_id, format=None):
-        customer = Customer.objects.filter(pk=customer_id).select_related('user').first()
+    def get(self, request, format=None):
+        user_id = request.user.id
+        customer = Customer.objects.filter(user_id=user_id).select_related('user').first()
         serializer = CustomerSerializer(customer)
         return Response(serializer.data)
 
-    def put(self, request, user_id, format=None):
+    def put(self, request, format=None):
+        user_id = request.user.id
         customer = Customer.objects.filter(user_id=user_id).select_related('user').first()
         serializer = CustomerSerializer(customer, data=request.data)
         if serializer.is_valid():
@@ -108,12 +109,19 @@ class CustomerView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]
+
 
 class BookedTourView(APIView):
-    def get(self, request, customer_id, format=None):
-        books = Booking.objects.filter(customer_id=customer_id)
+    def get(self, request, format=None):
+        user_id = request.user.id
+        books = Booking.objects.filter(customer__user_id=user_id)
         serializer = BookingSerializer(books, context={'request': request}, many=True)
         return Response(serializer.data)
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]
 
 
 class RateBookingView(APIView):
@@ -121,12 +129,13 @@ class RateBookingView(APIView):
         cmt = request.data.get('comment', '')
         rate = request.data.get('rate', 0)
 
-        customer_id = request.user.customer.id
+        user_id = request.user.id
 
-        if (rate < 1 or rate > 5 or rate % 0.5 != 0):
+        if rate < 1 or rate > 5 or rate % 0.5 != 0:
             return Response({'error': 'Invalid rate'}, status=400)
 
-        booking = Booking.objects.filter(pk=booking_id, customer_id=customer_id, status=BookingStatus.COMPLETED).first()
+        booking = Booking.objects.filter(pk=booking_id, customer__user_id=user_id,
+                                         status=BookingStatus.COMPLETED).first()
         if not booking:
             return Response({'error': 'Invalid booking'}, status=400)
         booking.rate.rate = rate
@@ -135,33 +144,44 @@ class RateBookingView(APIView):
 
         return Response('', status=201)
 
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]
+
 
 class OrderBookingView(APIView):
     def post(self, request, format=None):
         # nen su dung serializer
         tour_id = request.data.get('tour_id', 0)
-        customer_id = request.user.customer.id
+        user_id = request.user.id
         adult_count = request.data.get('adult_count', 0)
         child_count = request.data.get('child_count', 0)
-        time_start = request.data.get('time_start')
+        date_start = request.data.get('date_start')
 
         tour = Tour.objects.filter(pk=tour_id).first()
         if not tour:
             return Response({'error': 'Invalid tour'}, status=400)
+        if not self.validate_start_time(tour, date_start):
+            return Response({'error': 'Invalid time start'}, status=400)
 
+        time = tour.schedulerecurringweekly.time
+        time_start = datetime.combine(
+            datetime.strptime(date_start, '%Y-%m-%d'),
+            time)
+
+        customer = Customer.objects.filter(user_id=user_id).first()
         booking = Booking(
-            customer_id=customer_id,
+            customer=customer,
             tour_id=tour_id,
             adult_count=adult_count,
             child_count=child_count,
             adult_price=tour.adult_price,
             child_price=tour.child_price,
             time_start=time_start,
-            status=Booking.BookingStatus.UNPAID
+            status=BookingStatus.UNPAID
         )
         booking.save()
 
-        self.sendConfirmEmail(tour, request.user)
+        self.sendConfirmEmail(booking)
 
         return Response('', status=201)
 
@@ -171,13 +191,13 @@ class OrderBookingView(APIView):
         message = (Config.objects.filter(key=ConfigKey.CONFIRM_EMAIL_MESSAGE)
                    .values_list('value', flat=True).first())
 
-        message.replace('{tour_name}', booking.tour.name)
-        message.replace('{customer_name}', booking.customer.name)
-        message.replace('{adult_count}', booking.adult_count)
-        message.replace('{child_count}', booking.child_count)
-        message.replace('{time_order}', booking.time_order)
-        message.replace('{total}',
-                        booking.adult_count * booking.adult_price + booking.child_count * booking.child_price)
+        message = message.replace('{tour_name}', booking.tour.name)
+        message = message.replace('{customer_name}', booking.customer.name)
+        message = message.replace('{adult_count}', str(booking.adult_count))
+        message = message.replace('{child_count}', str(booking.child_count))
+        message = message.replace('{time_order}', booking.time_order.strftime("%m/%d/%Y, %H:%M:%S"))
+        message = message.replace('{total_price}',
+                                  str(booking.adult_count * booking.adult_price + booking.child_count * booking.child_price))
 
         send_mail(
             subject,
@@ -190,22 +210,20 @@ class OrderBookingView(APIView):
     def get_permissions(self):
         return [permissions.IsAuthenticated()]
 
-    def validate_start_time(self, tour, time_start):
-        from datetime import datetime, timedelta
+    def validate_start_time(self, tour, date_start_str):
 
-        days_in_week = tour.schedulerecurringweekly.schedulerecurringinweek_set
-        excludes_day = tour.schedulerecurringweekly.scheduleexcludedate_set
+        days_in_week = tour.schedulerecurringweekly.schedulerecurringinweek_set.values_list('day_in_week', flat=True)
+        excludes_day = tour.schedulerecurringweekly.scheduleexcludedate_set.values_list('date', flat=True)
 
-        start_date = datetime.now()
-        end_date = start_date + timedelta(days=90)
+        date_start = datetime.strptime(date_start_str, '%Y-%m-%d')
+        days_in_week = [8 if day == 1 else day for day in days_in_week]
 
-        d = start_date
-        while d <= end_date:
-            date_str = d.strftime('%Y-%m-%d')
-            if date_str == time_start:
-                if date_str not in excludes_day and (d.weekday() + 1) in days_in_week:
-                    return True
-                else:
-                    return False
-            d += timedelta(days=1)
-        return False
+        today = datetime.now()
+        end_date = today + timedelta(days=90)
+
+        if (date_start.weekday() + 2 in days_in_week and
+                date_start not in excludes_day and
+                today <= date_start <= end_date):
+            return True
+        else:
+            return False

@@ -67,7 +67,7 @@ class RatingSerializer(serializers.ModelSerializer):
 
     def get_customer_info(self, obj):
         return {
-            'name': f'{obj.customer.user.last_name} {obj.customer.user.first_name}',
+            'name': f'{obj.booking.customer.user.last_name} {obj.booking.customer.user.first_name}',
             # 'avatar': obj.customer.user.avatar,
         }
 

@@ -66,7 +66,7 @@ const PropertyCard = ({ tour, selectedDates }) => {
           >
             <FontAwesome name='star' size={18} color='#dec350' />
             <Text style={{ fontSize: 15 }}>
-              {tour.avg_rating.toFixed(1)} ({tour.rating_count} đánh giá)
+              {tour.avg_rating?.toFixed(1)} ({tour.rating_count} đánh giá)
             </Text>
           </View>
           <View

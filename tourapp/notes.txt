@@ -1,3 +1,7 @@
 Xem danh sách tour du lịch (phân trang mỗi trang tối đa 20 tour)
 => dùng model view, setting paging
 => chuyển các api view cần phân trang thành model view
+
+Xem rate tour
+
+rate tour

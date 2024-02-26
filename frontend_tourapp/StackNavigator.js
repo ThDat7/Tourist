@@ -23,6 +23,8 @@ import ConfirmationScreen from './components/Booking/ConfirmationScreen'
 import ConfirmOrderScreen from './components/Booking/ConfirmOrderScreen'
 import LoginScreen from './components/User/LoginScreen'
 import RegisterScreen from './components/User/RegisterScreen'
+import PaymentScreen from './components/Booking/PaymentScreen'
+
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator()
   const Stack = createNativeStackNavigator()
@@ -119,27 +121,31 @@ const StackNavigator = () => {
           component={LoginScreen}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name='Register'
           component={RegisterScreen}
           options={{ headerShown: false }}
-        /> */}
+        />
         <Stack.Screen
           name='Main'
           component={BottomTabs}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name='Search'
           component={SearchScreen}
           options={{ headerShown: false }}
-        /> */}
-        {/* <Stack.Screen name='Places' component={PlacesScreen} /> */}
-        {/* <Stack.Screen name='TourDetail' component={PropertyInfoScreen} /> */}
-        {/* <Stack.Screen name='Ratings' component={RatingsScreen} /> */}
-        {/* <Stack.Screen name='OrderTicket' component={OrderTicketScreen} /> */}
+        />
+        <Stack.Screen
+          name='Places'
+          component={PlacesScreen}
+          options={(title = '')}
+        />
+        <Stack.Screen name='TourDetail' component={PropertyInfoScreen} />
+        <Stack.Screen name='Ratings' component={RatingsScreen} />
+        <Stack.Screen name='OrderTicket' component={OrderTicketScreen} />
         <Stack.Screen name='ConfirmOrder' component={ConfirmOrderScreen} />
-        {/* <Stack.Screen name='Payment' component={PaymentScreen} /> */}
+        <Stack.Screen name='Payment' component={PaymentScreen} />
         <Stack.Screen name='Rooms' component={RoomsScreen} />
         <Stack.Screen name='User' component={UserScreen} />
         <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
