@@ -6,14 +6,16 @@ from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LogoutView
 from django.core.mail import send_mail
 from django.db.models import Count, Avg
-from rest_framework import permissions
+from rest_framework import permissions, generics
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 
 from tours.models import Tour, TouristPlace, Rating, ScheduleRecurringWeekly, Customer, Booking, BookingStatus, Config, \
-    ConfigKey
+    ConfigKey, News
 from tours.serializers import SearchSuggestionSerializer, TourSearchSerializer, TourSerializer, RatingSerializer, \
-    TourPricingSerializer, TourScheduleSerializer, CustomerSerializer, BookingSerializer
+    TourPricingSerializer, TourScheduleSerializer, CustomerSerializer, BookingSerializer, NewsSerializer
 
 
 # Create your views here.
@@ -75,7 +77,7 @@ class TourView(APIView):
             avg_rating=Avg('booking__rating__rate')
         ).first()
 
-        serializer = TourSerializer(tours)
+        serializer = TourSerializer(tours, context={'request': request})
         return Response(serializer.data)
 
 
@@ -227,3 +229,17 @@ class OrderBookingView(APIView):
             return True
         else:
             return False
+
+
+class NewsViewSet(ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class LikeNewsView(APIView):
+    pass
+
+
+class CommentNewsView(APIView):
+    pass

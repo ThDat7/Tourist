@@ -52,8 +52,6 @@ const ProfileScreen = () => {
       try {
         let response = await AuthApi.get(endpoints['customer-info'])
 
-        console.log(response)
-
         setLastname(response.data.lastname)
         setFirstname(response.data.firstname)
         setEmail(response.data.email)

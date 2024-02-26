@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -6,24 +6,22 @@ import HomeScreen from './components/Home/HomeScreen'
 import { AntDesign } from '@expo/vector-icons'
 import { Entypo } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
+import { Octicons } from '@expo/vector-icons'
 import SavedScreen from './components/Favorites/SavedScreen'
-import BookingScreen from './components/Notifications/BookingScreen'
 import ProfileScreen from './components/User/ProfileScreen'
 import BookedToursScreen from './components/User/BookedToursScreen'
 import { NavigationContainer } from '@react-navigation/native'
 import { FontAwesome } from '@expo/vector-icons'
 import SearchScreen from './components/Search/SearchScreen'
-import PlacesScreen from './components/Places/PlacesScreen'
-import PropertyInfoScreen from './components/Places/PropertyInfoScreen'
-import RatingsScreen from './components/Places/RatingsScreen'
-import OrderTicketScreen from './components/Booking/OrderTicketScreen'
-import RoomsScreen from './components/Booking/RoomsScreen'
-import UserScreen from './components/Booking/UserScreen'
-import ConfirmationScreen from './components/Booking/ConfirmationScreen'
-import ConfirmOrderScreen from './components/Booking/ConfirmOrderScreen'
+import ToursScreen from './components/Tours/ToursScreen'
+import TourDetailScreen from './components/Tours/TourDetailScreen'
+import RatingsScreen from './components/Tours/RatingsScreen'
+import OrderTicketScreen from './components/Order/OrderTicketScreen'
+import ConfirmOrderScreen from './components/Order/ConfirmOrderScreen'
 import LoginScreen from './components/User/LoginScreen'
-import RegisterScreen from './components/User/RegisterScreen'
-import PaymentScreen from './components/Booking/PaymentScreen'
+import PaymentScreen from './components/Order/PaymentScreen'
+import NewsScreen from './components/News/NewsScreen'
+import NewsDetailScreen from './components/News/NewsDetailScreen'
 
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator()
@@ -63,25 +61,6 @@ const StackNavigator = () => {
         />
 
         <Tab.Screen
-          name='Bookings'
-          component={BookingScreen}
-          options={{
-            tabBarLabel: 'Bookings',
-            headerShown: false,
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <Ionicons name='notifications' size={24} color='#003580' />
-              ) : (
-                <Ionicons
-                  name='notifications-outline'
-                  size={24}
-                  color='black'
-                />
-              ),
-          }}
-        />
-
-        <Tab.Screen
           name='BookedTours'
           component={BookedToursScreen}
           options={{
@@ -89,9 +68,9 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <FontAwesome name='history' size={24} color='#003580' />
+                <Octicons name='history' size={24} color='#003580' />
               ) : (
-                <FontAwesome name='history' size={24} color='black' />
+                <Octicons name='history' size={24} color='black' />
               ),
           }}
         />
@@ -122,11 +101,6 @@ const StackNavigator = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='Register'
-          component={RegisterScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name='Main'
           component={BottomTabs}
           options={{ headerShown: false }}
@@ -136,19 +110,14 @@ const StackNavigator = () => {
           component={SearchScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name='Places'
-          component={PlacesScreen}
-          options={(title = '')}
-        />
-        <Stack.Screen name='TourDetail' component={PropertyInfoScreen} />
+        <Stack.Screen name='Places' component={ToursScreen} />
+        <Stack.Screen name='TourDetail' component={TourDetailScreen} />
         <Stack.Screen name='Ratings' component={RatingsScreen} />
         <Stack.Screen name='OrderTicket' component={OrderTicketScreen} />
         <Stack.Screen name='ConfirmOrder' component={ConfirmOrderScreen} />
         <Stack.Screen name='Payment' component={PaymentScreen} />
-        <Stack.Screen name='Rooms' component={RoomsScreen} />
-        <Stack.Screen name='User' component={UserScreen} />
-        <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
+        <Stack.Screen name='News' component={NewsScreen} />
+        <Stack.Screen name='NewsDetail' component={NewsDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

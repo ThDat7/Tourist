@@ -5,21 +5,11 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
-  Image,
 } from 'react-native'
-import DatePicker from 'react-native-date-ranges'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { pixelNormalize } from '../../utils/Normalise'
-import { MaterialIcons } from '@expo/vector-icons'
-import Amenities from '../../utils/Amenities'
 import OrderItem from './OrderItem'
 import API, { endpoints } from '../../configs/API'
-import { FontAwesome } from '@expo/vector-icons'
-import { AntDesign } from '@expo/vector-icons'
-import { Feather } from '@expo/vector-icons'
-import { FontAwesome5 } from '@expo/vector-icons'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import AuthAPI from '../../configs/AuthApi'
 
 const ConfirmOrderScreen = () => {
@@ -74,20 +64,24 @@ const ConfirmOrderScreen = () => {
   }, [tourId])
 
   const payment = async () => {
-    await AuthAPI.post(endpoints['order-booking'], {
-      tour_id: tourId,
-      date_start: dateSelected,
-      adult_count: adultCount,
-      child_count: childCount,
-    })
-    // navigation.navigate('Payment', {
-    //   tourId,
-    //   dateSelected,
-    //   adultCount,
-    //   childCount,
-    // })
+    try {
+      const response = await AuthAPI.post(endpoints['order-booking'], {
+        tour_id: tourId,
+        date_start: dateSelected,
+        adult_count: adultCount,
+        child_count: childCount,
+      }).catch((e) => {
+        console.error(e.error)
+      })
+      // navigation.navigate('Payment', {
+      //   tourId,
+      //   dateSelected,
+      //   adultCount,
+      //   childCount,
+      // })
 
-    navigation.navigate('Home')
+      navigation.navigate('Home')
+    } catch (e) {}
   }
 
   return (

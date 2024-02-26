@@ -8,11 +8,10 @@ import {
 } from 'react-native'
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons'
-import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { FontAwesome } from '@expo/vector-icons'
 
-const PropertyCard = ({ tour, selectedDates }) => {
+const TourCard = ({ tour, selectedDates }) => {
   const { width, height } = Dimensions.get('window')
   const navigation = useNavigation()
   return (
@@ -83,6 +82,6 @@ const PropertyCard = ({ tour, selectedDates }) => {
   )
 }
 
-export default PropertyCard
+export default TourCard
 
 const styles = StyleSheet.create({})

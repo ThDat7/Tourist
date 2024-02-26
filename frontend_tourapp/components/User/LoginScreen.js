@@ -6,12 +6,11 @@ import {
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin'
 import UserContext from '../../configs/UserContext'
-import AuthAPI from '../../configs/AuthApi'
 import API, { endpoints } from '../../configs/API'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginScreen = () => {
-  const [, dispatch] = useContext(UserContext)
+  const [user, dispatch] = useContext(UserContext)
   const navigation = useNavigation()
 
   const configureGoogleSigIn = () => {
@@ -22,6 +21,7 @@ const LoginScreen = () => {
   }
 
   useEffect(() => {
+    if (user.id) navigation.navigate('Main')
     configureGoogleSigIn()
   })
 
@@ -44,7 +44,7 @@ const LoginScreen = () => {
 
       navigation.navigate('Main')
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 

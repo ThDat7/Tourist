@@ -5,6 +5,7 @@ from tours import views
 
 router = routers.DefaultRouter()
 # router.register('customers', views.CustomerViewSet, basename='customers')
+router.register('news', views.NewsViewSet, basename='news')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -17,5 +18,7 @@ urlpatterns = [
     path('customers/', views.CustomerView.as_view(), name='customer-info'),
     path('customers/tours-history/', views.BookedTourView.as_view()),
     path('customers/rate-booking/<int:booking_id>/', views.RateBookingView.as_view()),
-    path('order-booking/', views.OrderBookingView.as_view())
+    path('order-booking/', views.OrderBookingView.as_view()),
+    path('news/<int:news_id>/like', views.LikeNewsView.as_view()),
+    path('news/<int:news_id>/like', views.CommentNewsView.as_view()),
 ]

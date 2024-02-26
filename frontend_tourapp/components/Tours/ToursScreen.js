@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import PropertyCard from './PropertyCard'
+import TourCard from './TourCard'
 import API, { endpoints } from '../../configs/API'
 
 const ToursScreen = () => {
@@ -61,7 +61,7 @@ const ToursScreen = () => {
         <ScrollView style={{ backgroundColor: '#F5F5F5' }}>
           <View>
             {data.tours.map((tour) => (
-              <PropertyCard
+              <TourCard
                 key={tour.id}
                 tour={tour}
                 selectedDates={selectedDates}
@@ -76,7 +76,7 @@ const ToursScreen = () => {
           )}
           <View>
             {data.related_tours?.map((tour) => (
-              <PropertyCard key={tour.id} tour={tour} />
+              <TourCard key={tour.id} tour={tour} />
             ))}
           </View>
         </ScrollView>

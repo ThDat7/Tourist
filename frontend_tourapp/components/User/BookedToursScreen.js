@@ -4,19 +4,12 @@ import {
   View,
   SafeAreaView,
   ScrollView,
-  Pressable,
   Image,
 } from 'react-native'
-import DatePicker from 'react-native-date-ranges'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { pixelNormalize } from '../../utils/Normalise'
-import { MaterialIcons } from '@expo/vector-icons'
-import Amenities from '../../utils/Amenities'
-import API, { endpoints } from '../../configs/API'
-import { FontAwesome } from '@expo/vector-icons'
-import { AntDesign } from '@expo/vector-icons'
-import { Feather } from '@expo/vector-icons'
+import { endpoints } from '../../configs/API'
+import AuthAPI from '../../configs/AuthApi'
 
 const BookedToursScreen = () => {
   const route = useRoute()
@@ -51,7 +44,7 @@ const BookedToursScreen = () => {
     const fetchBooks = async () => {
       try {
         let url = endpoints['tours-history']
-        let data = await API.get(url)
+        let data = await AuthAPI.get(url)
 
         setbooks(data.data)
       } catch (err) {
@@ -100,7 +93,7 @@ const BookedToursScreen = () => {
                     source={{
                       uri: 'http://127.0.0.1:8000/static/tours/1111111.jpg',
                     }}
-                  ></Image>
+                  />
                   <View
                     style={{
                       width: '63%',

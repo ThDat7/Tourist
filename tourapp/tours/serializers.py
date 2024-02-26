@@ -2,7 +2,7 @@ from django.db.models import Avg
 from rest_framework import serializers
 
 from tours.models import Tour, TouristPlace, Rating, ScheduleRecurringInWeek, ScheduleExcludeDate, \
-    ScheduleRecurringWeekly, Customer, Booking, SavedTours
+    ScheduleRecurringWeekly, Customer, Booking, SavedTours, News
 
 
 class TourSearchSuggestionSerializer(serializers.ModelSerializer):
@@ -56,6 +56,12 @@ class TourSerializer(serializers.ModelSerializer):
     rating_count = serializers.IntegerField()
     avg_rating = serializers.FloatField()
     schedule = TourScheduleSerializer(source='schedulerecurringweekly')
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        if obj.main_image:
+            request = self.context.get('request')
+            return request.build_absolute_uri('/static/%s' % obj.main_image.name)
 
     class Meta:
         model = Tour
@@ -131,3 +137,11 @@ class SavedToursSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedTours
         fields = ['tour']
+
+
+class NewsSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source='author.name')
+
+    class Meta:
+        model = News
+        fields = ['title', 'content', 'author_name']

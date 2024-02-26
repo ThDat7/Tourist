@@ -1,9 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { FontAwesome5 } from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 
 const Header = () => {
+  const navigation = useNavigation()
+
   return (
     <View
       style={{
@@ -15,6 +18,7 @@ const Header = () => {
       }}
     >
       <Pressable
+        onPress={() => navigation.navigate('Home')}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -33,17 +37,18 @@ const Header = () => {
             fontSize: 15,
           }}
         >
-          Stays
+          Du lịch
         </Text>
       </Pressable>
 
       <Pressable
+        onPress={() => navigation.navigate('News')}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
         }}
       >
-        <Ionicons name='airplane-outline' size={26} color='white' />
+        <FontAwesome name='newspaper-o' size={26} color='white' />
         <Text
           style={{
             marginLeft: 8,
@@ -52,45 +57,7 @@ const Header = () => {
             fontSize: 15,
           }}
         >
-          Flights
-        </Text>
-      </Pressable>
-
-      <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <Ionicons name='car-outline' size={26} color='white' />
-        <Text
-          style={{
-            marginLeft: 8,
-            fontWeight: 'bold',
-            color: 'white',
-            fontSize: 15,
-          }}
-        >
-          Car Rental
-        </Text>
-      </Pressable>
-
-      <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <FontAwesome5 name='uber' size={26} color='white' />
-        <Text
-          style={{
-            marginLeft: 8,
-            fontWeight: 'bold',
-            color: 'white',
-            fontSize: 15,
-          }}
-        >
-          Taxi
+          Tin tức
         </Text>
       </Pressable>
     </View>

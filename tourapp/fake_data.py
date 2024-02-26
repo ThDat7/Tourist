@@ -103,10 +103,18 @@ if __name__ == '__main__':
             print(f"Created Tag: {tag.name}")
 
 
+    from django.core.files import File
+
+
     def create_tours(num_tours=20):
         places = TouristPlace.objects.all()
         tags = Tag.objects.all()
         staff_users = Staff.objects.all()
+
+        # Lấy danh sách các file hình ảnh từ thư mục
+        image_folder = r'D:\Hoc\tour_django\tourapp\tourapp\tours\static\tours\template_images'
+        image_files = [os.path.join(image_folder, f) for f in os.listdir(image_folder) if
+                       os.path.isfile(os.path.join(image_folder, f))]
 
         if not staff_users.exists():
             print("No staff users found.")
@@ -127,6 +135,16 @@ if __name__ == '__main__':
                 child_price=random.randint(50, 250),
                 author=tour_author
             )
+
+            if image_files:
+                selected_image_path = random.choice(image_files)
+                with open(selected_image_path, 'rb') as f:
+                    # Gán hình ảnh cho trường main_image
+                    tour.main_image.save(os.path.basename(selected_image_path), File(f))
+                image_files.remove(selected_image_path)
+            else:
+                print("No images found.")
+                break
 
             # Chọn ngẫu nhiên một số lượng tag cho tour
             num_tags = random.randint(1, 3)

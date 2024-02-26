@@ -155,7 +155,6 @@ const HomeScreen = () => {
                 customButton={(onConfirm) => customButton(onConfirm)}
                 onConfirm={(startDate, endDate) => {
                   setSelectedDates(startDate, endDate)
-                  console.log('Selected Dates:', startDate, endDate)
                 }}
                 allowFontScaling={false}
                 placeholder={'Bất cứ ngày nào'}

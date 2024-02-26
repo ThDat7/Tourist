@@ -5,20 +5,17 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
-  Image,
 } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { pixelNormalize } from '../../utils/Normalise'
 import { MaterialIcons } from '@expo/vector-icons'
-import Amenities from '../../utils/Amenities'
 import API, { endpoints } from '../../configs/API'
 import { FontAwesome } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 import { Calendar } from 'react-native-calendars'
 
-const TourInfoScreen = () => {
+const TourDetailScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
 
@@ -339,6 +336,6 @@ const TourInfoScreen = () => {
   )
 }
 
-export default TourInfoScreen
+export default TourDetailScreen
 
 const styles = StyleSheet.create({})

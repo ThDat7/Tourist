@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Image } from 'react-native'
 
 const OrderItem = ({
   tourName,
@@ -13,11 +14,26 @@ const OrderItem = ({
 }) => (
   <View style={{ flexDirection: 'row', gap: 20 }}>
     <View style={{}}>
-      {/* <Image></Image> */}
-      <Text>Fake image</Text>
+      <Image
+        style={{
+          width: 100,
+          height: 100,
+          resizeMode: 'cover',
+          borderRadius: 7,
+        }}
+        source={{ uri: image }}
+      />
     </View>
     <View style={{}}>
-      <Text style={{ fontSize: 18, fontWeight: 700 }}>{tourName}</Text>
+      <Text
+        style={{
+          fontSize: 18,
+          fontWeight: 700,
+          width: '80%',
+        }}
+      >
+        {tourName} aaaaaaaaa
+      </Text>
       <Text>{startTime}</Text>
       <View
         style={{

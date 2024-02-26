@@ -1,20 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Pressable,
-  Image,
-} from 'react-native'
-import DatePicker from 'react-native-date-ranges'
+import { StyleSheet, Text, View, SafeAreaView, Pressable } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { pixelNormalize } from '../../utils/Normalise'
-import { MaterialIcons } from '@expo/vector-icons'
-import Amenities from '../../utils/Amenities'
 import API, { endpoints } from '../../configs/API'
-import { FontAwesome } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 
@@ -66,8 +53,6 @@ const OrderTicketScreen = () => {
 
     fetchTourPricing()
   }, [tourPricing])
-
-  console.log(tourPricing)
 
   // const difference = route.params?.oldPrice - route.params?.newPrice
   // const offerPrice = (Math.abs(difference) / route.params?.oldPrice) * 100

@@ -14,7 +14,6 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { Entypo } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
-import SearchResults from '../../utils/SearchResults'
 import API, { endpoints } from '../../configs/API'
 import axios from 'axios'
 import { SafeAreaView } from 'react-native-safe-area-context'
