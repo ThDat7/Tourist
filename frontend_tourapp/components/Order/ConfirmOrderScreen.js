@@ -98,14 +98,14 @@ const ConfirmOrderScreen = () => {
               adultPrice={tour.adult_price}
               startTime={dateSelected}
             />
-            <View style={{ gap: 5 }}>
+            <View style={{ marginTop: 20, gap: 5 }}>
               <Text style={{ fontSize: 22, fontWeight: 700 }}>
                 Thông tin của bạn
               </Text>
-              <Text>Họ: Nguyen</Text>
-              <Text>Tên: Dat</Text>
-              <Text>Địa chỉ email: 123@gmail.com</Text>
-              <Text>Số điện thoại: 0123456789</Text>
+              <Text>Họ: {customerInfo.firstname}</Text>
+              <Text>Tên: {customerInfo.lastname}</Text>
+              <Text>Địa chỉ email: {customerInfo.email}</Text>
+              <Text>Số điện thoại: {customerInfo.phoneNumber}</Text>
             </View>
             <View style={{ alignItems: 'center', marginTop: 30 }}>
               <Pressable

@@ -6,7 +6,7 @@ const AuthAPI = axios.create({
   headers: {
     'content-type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 0,
   withCredentials: true,
 })
 

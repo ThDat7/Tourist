@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
+  Image,
+  useWindowDimensions,
 } from 'react-native'
 import React, { useLayoutEffect, useState, useEffect } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -14,10 +16,13 @@ import { FontAwesome } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
 import { Calendar } from 'react-native-calendars'
+import RenderHTML from 'react-native-render-html'
 
 const TourDetailScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
+
+  const { width } = useWindowDimensions()
 
   const [tour, setTour] = useState(null)
   const [dateSelected, setDateSelected] = useState('')
@@ -66,7 +71,9 @@ const TourDetailScreen = () => {
       if (!tour) return
 
       let availableDates = {}
-      const daysInWeek = tour.schedule.days_in_week
+      const daysInWeek = tour.schedule.days_in_week.map((item) =>
+        item == 7 ? 0 : item
+      )
       const excludesDay = tour.schedule.excludes_day
 
       const startDate = new Date()
@@ -79,10 +86,7 @@ const TourDetailScreen = () => {
         d.setDate(d.getDate() + 1)
       ) {
         const dateStr = d.toISOString().split('T')[0]
-        if (
-          !excludesDay.includes(dateStr) &&
-          daysInWeek.includes(d.getDay() + 1)
-        ) {
+        if (!excludesDay.includes(dateStr) && daysInWeek.includes(d.getDay())) {
           availableDates[dateStr] = { marked: true, disabled: false }
         }
       }
@@ -124,25 +128,17 @@ const TourDetailScreen = () => {
               <Pressable
                 style={{ flexDirection: 'row', flexWrap: 'wrap', margin: 10 }}
               >
-                {/* {route.params?.photos.slice(0, 5).map((photo) => (
                 <View style={{ margin: 6 }}>
                   <Image
                     style={{
-                      width: 120,
-                      height: pixelNormalize(80),
-                      borderRadius: pixelNormalize(4),
+                      width: 350,
+                      height: 300,
+                      borderRadius: 4,
+                      resizeMode: 'cover',
                     }}
-                    source={{ uri: photo.image }}
+                    source={{ uri: tour.image }}
                   />
                 </View>
-              ))} */}
-                <Pressable
-                  style={{ alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <Text style={{ textAlign: 'center', marginLeft: 20 }}>
-                    Show More
-                  </Text>
-                </Pressable>
               </Pressable>
 
               <View
@@ -255,6 +251,9 @@ const TourDetailScreen = () => {
                           todayTextColor: '#68ba56',
                           dayTextColor: '#00adf5',
                           dayBackgroundColor: '#00adf5',
+                          selectedDayTextColor: 'red',
+
+                          selectedDayBackgroundColor: 'red',
                         }}
                       />
                     </Pressable>
@@ -270,7 +269,7 @@ const TourDetailScreen = () => {
                   marginTop: 15,
                 }}
               />
-              <Text
+              {/* <Text
                 style={{
                   fontSize: 18,
                   paddingTop: 20,
@@ -278,60 +277,69 @@ const TourDetailScreen = () => {
                 }}
               >
                 {tour.description}
-              </Text>
+              </Text> */}
+
+              <ScrollView>
+                <RenderHTML
+                  contentWidth={width}
+                  source={{ html: tour.description }}
+                />
+              </ScrollView>
             </View>
           </ScrollView>
         )}
       </SafeAreaView>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          position: 'absolute',
-          backgroundColor: 'white',
-          bottom: 0,
-        }}
-      >
-        <Text
+      {tour && (
+        <View
           style={{
-            padding: 10,
-            fontSize: 16,
-          }}
-        >
-          Giá chỉ từ {'\n'}
-          <Text style={{ fontSize: 20, fontWeight: '600', color: '#6CB4EE' }}>
-            3.050.000đ/khách
-          </Text>
-        </Text>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('OrderTicket', {
-              tourId,
-              dateSelected,
-            })
-          }}
-          style={{
-            backgroundColor: '#6CB4EE',
-            width: '40%',
-            padding: 10,
-            borderRadius: 7,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            position: 'absolute',
+            backgroundColor: 'white',
+            bottom: 0,
           }}
         >
           <Text
             style={{
-              textAlign: 'center',
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: 17,
+              padding: 10,
+              fontSize: 16,
             }}
           >
-            Đặt vé
+            Giá chỉ từ {'\n'}
+            <Text style={{ fontSize: 20, fontWeight: '600', color: '#6CB4EE' }}>
+              {tour.adult_price}đ/khách
+            </Text>
           </Text>
-        </Pressable>
-      </View>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('OrderTicket', {
+                tourId,
+                dateSelected,
+              })
+            }}
+            style={{
+              backgroundColor: '#007FFF',
+              width: '40%',
+              padding: 10,
+              borderRadius: 7,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 17,
+              }}
+            >
+              Đặt vé
+            </Text>
+          </Pressable>
+        </View>
+      )}
     </>
   )
 }

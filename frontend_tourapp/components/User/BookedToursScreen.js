@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Pressable,
 } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -54,7 +55,7 @@ const BookedToursScreen = () => {
     }
 
     fetchBooks()
-  }, [userId])
+  }, [])
 
   return (
     <>
@@ -62,7 +63,10 @@ const BookedToursScreen = () => {
         {books && (
           <ScrollView style={{ backgroundColor: '#d2d4d6' }}>
             {books.map((book) => (
-              <View
+              <Pressable
+                onPress={() =>
+                  navigation.navigate('BookedTourDetail', { id: book.id })
+                }
                 key={book.id}
                 style={{
                   padding: 20,
@@ -91,7 +95,7 @@ const BookedToursScreen = () => {
                       marginRight: '5%',
                     }}
                     source={{
-                      uri: 'http://127.0.0.1:8000/static/tours/1111111.jpg',
+                      uri: book.tour_main_image,
                     }}
                   />
                   <View
@@ -129,7 +133,7 @@ const BookedToursScreen = () => {
                     )}
                   </Text>
                 </View>
-              </View>
+              </Pressable>
             ))}
           </ScrollView>
         )}

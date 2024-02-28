@@ -40,7 +40,7 @@ if __name__ == '__main__':
             last_name = fake.last_name()
             username = fake.user_name()
             email = fake.email()
-            password = make_password(fake.password())
+            password = make_password('123')
             avatar_url = fake.image_url()
 
             User.objects.create(
@@ -69,7 +69,7 @@ if __name__ == '__main__':
         for _ in range(num_staff):
             username = fake.user_name()
             email = fake.email()
-            password = make_password(fake.password())
+            password = make_password('123')
             avatar_url = fake.image_url()
             staff_user = User.objects.create(username=username, email=email, password=password, avatar=avatar_url,
                                              is_staff=True)
@@ -81,10 +81,12 @@ if __name__ == '__main__':
         for _ in range(num_customers):
             username = fake.user_name()
             email = fake.email()
-            password = make_password(fake.password())
+            password = make_password('123')
             first_name = fake.first_name()
             last_name = fake.last_name()
-            avatar_url = fake.image_url()
+            avatar_url = random.choice(
+                ['https://res.cloudinary.com/dr2sclnyl/image/upload/v1708981490/user-avt/eiitfpf6engtl5069yfs.jpg',
+                 None])
             customer_user = User.objects.create(username=username, email=email, password=password, last_name=last_name,
                                                 first_name=first_name, avatar=avatar_url)
             Customer.objects.create(user=customer_user)
@@ -269,14 +271,30 @@ if __name__ == '__main__':
 
     def create_news(num_news=10):
         staff_users = Staff.objects.all()
+
+        image_folder = r'D:\Hoc\tour_django\tourapp\tourapp\tours\static\tours\template_images'
+        image_files = [os.path.join(image_folder, f) for f in os.listdir(image_folder) if
+                       os.path.isfile(os.path.join(image_folder, f))]
+
         for _ in range(num_news):
             author = random.choice(staff_users)
 
-            News.objects.create(
+            news = News.objects.create(
                 title=fake.sentence(),
                 content=fake.text(),
                 author=author
             )
+
+            if image_files:
+                selected_image_path = random.choice(image_files)
+                with open(selected_image_path, 'rb') as f:
+                    # Gán hình ảnh cho trường main_image
+                    news.main_image.save(os.path.basename(selected_image_path), File(f))
+                image_files.remove(selected_image_path)
+            else:
+                print("No images found.")
+                break
+
             print(f"Created News by Author: {author.user.username}")
 
 

@@ -1,28 +1,20 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Image,
-} from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import API, { endpoints } from '../../configs/API'
 import { FontAwesome } from '@expo/vector-icons'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const RatingsScreen = () => {
   const route = useRoute()
   const navigation = useNavigation()
 
   const [ratings, setRatings] = useState([])
-  const [loading, setLoading] = useState(false)
 
   const tourId = route.params?.tourId
 
   useLayoutEffect(() => {
     if (ratings.length > 0) return
-    setLoading(true)
 
     navigation.setOptions({
       headerShown: true,
@@ -46,22 +38,20 @@ const RatingsScreen = () => {
         let data = await API.get(url)
 
         setRatings(data.data)
-        setLoading(false)
       } catch (err) {
-        setLoading(true)
         setRatings([])
         console.error(err)
       }
     }
 
     fetchRatings()
-  }, [ratings])
+  }, [tourId])
 
   return (
-    <>
-      <SafeAreaView>
-        {!loading && ratings && (
-          <ScrollView>
+    <View>
+      {ratings && (
+        <ScrollView style={{ marginBottom: 20 }}>
+          <View>
             {ratings.map((rating) => (
               <View
                 key={rating.id}
@@ -77,36 +67,65 @@ const RatingsScreen = () => {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    marginBottom: 5,
                   }}
                 >
-                  <View>
-                    <Image
-                      // style={{ height: height / 5, width: width - 300 }}
-                      source={{ uri: rating.customer_info.avatar }}
-                    />
-                    <Text style={{ fontWeight: '500', fontSize: 18 }}>
-                      {rating.customer_info.name}
-                    </Text>
-                    <Text>1 năm trước</Text>
+                  <View style={{ flexDirection: 'row', gap: 10 }}>
+                    {rating.customer_info.avatar.uri ? (
+                      <Image
+                        style={{ height: 50, width: 50, borderRadius: 30 }}
+                        source={{ uri: rating.customer_info.avatar.uri }}
+                      />
+                    ) : (
+                      <FontAwesome name='user-circle' size={47} color='black' />
+                    )}
+                    <View>
+                      <Text style={{ fontWeight: '500', fontSize: 18 }}>
+                        {rating.customer_info.name}
+                      </Text>
+                      <Text>1 năm trước</Text>
+                    </View>
                   </View>
                   <View style={{ flexDirection: 'row', gap: 3, marginTop: 10 }}>
-                    <FontAwesome name='star' size={18} color='#dec350' />
-                    <FontAwesome name='star' size={18} color='#dec350' />
-                    <FontAwesome name='star' size={18} color='#dec350' />
-                    <FontAwesome name='star' size={18} color='#dec350' />
-                    <FontAwesome name='star' size={18} color='#dec350' />
+                    {[...Array(Math.floor(rating.rate))].map((_, index) => (
+                      <FontAwesome
+                        key={index}
+                        name='star'
+                        size={18}
+                        color='#dec350'
+                      />
+                    ))}
+                    {rating.rate % 1 !== 0 && (
+                      <FontAwesome
+                        name='star-half-full'
+                        size={18}
+                        color='#dec350'
+                      />
+                    )}
+                    {[...Array(5 - Math.ceil(rating.rate))].map((_, index) => (
+                      <FontAwesome
+                        key={index}
+                        name='star'
+                        size={18}
+                        color='#ccc'
+                      />
+                    ))}
                   </View>
                 </View>
                 <Text style={{ fontSize: 17 }}>{rating.cmt}</Text>
               </View>
             ))}
-          </ScrollView>
-        )}
-      </SafeAreaView>
-    </>
+          </View>
+        </ScrollView>
+      )}
+    </View>
   )
 }
 
 export default RatingsScreen
 
 const styles = StyleSheet.create({})
+
+const insdeView = () => {
+  return <></>
+}

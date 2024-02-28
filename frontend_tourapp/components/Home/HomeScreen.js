@@ -81,7 +81,7 @@ const HomeScreen = () => {
   return (
     <>
       <View>
-        <Header />
+        <Header state={'dulich'} />
 
         <ScrollView>
           <View
@@ -188,95 +188,10 @@ const HomeScreen = () => {
             </Pressable>
           </View>
 
-          <Text
-            style={{ marginHorizontal: 20, fontSize: 17, fontWeight: '500' }}
-          >
-            Travel More spend less
-          </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <Pressable
-              style={{
-                width: 200,
-                height: 150,
-                marginTop: 10,
-                backgroundColor: '#003580',
-                borderRadius: 10,
-                padding: 20,
-                marginHorizontal: 20,
-              }}
-            >
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 15,
-                  fontWeight: 'bold',
-                  marginVertical: 7,
-                }}
-              >
-                Genius
-              </Text>
-              <Text style={{ color: 'white', fontSize: 15, fontWeight: '500' }}>
-                You are ate genius level one in our loyalty program
-              </Text>
-            </Pressable>
-
-            <Pressable
-              style={{
-                width: 200,
-                height: 150,
-                marginTop: 10,
-                borderColor: '#E0E0E0',
-                borderWidth: 2,
-                borderRadius: 10,
-                padding: 20,
-                marginHorizontal: 10,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: 'bold',
-                  marginVertical: 7,
-                }}
-              >
-                15% Discounts
-              </Text>
-              <Text style={{ fontSize: 15, fontWeight: '500' }}>
-                Complete 5 stays to unlock level 2
-              </Text>
-            </Pressable>
-
-            <Pressable
-              style={{
-                width: 200,
-                height: 150,
-                marginTop: 10,
-                borderColor: '#E0E0E0',
-                borderWidth: 2,
-                borderRadius: 10,
-                padding: 20,
-                marginHorizontal: 20,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: 'bold',
-                  marginVertical: 7,
-                }}
-              >
-                10% Discounts
-              </Text>
-              <Text style={{ fontSize: 15, fontWeight: '500' }}>
-                Enjoy Discounts at participating at properties worldwide
-              </Text>
-            </Pressable>
-          </ScrollView>
-
           <Pressable
             style={{
-              marginTop: 40,
-              justifyContent: 'center',
+              marginTop: 100,
+              justifyContent: 'flex-end',
               alignItems: 'center',
             }}
           >

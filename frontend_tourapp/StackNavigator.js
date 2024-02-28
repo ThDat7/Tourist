@@ -22,6 +22,7 @@ import LoginScreen from './components/User/LoginScreen'
 import PaymentScreen from './components/Order/PaymentScreen'
 import NewsScreen from './components/News/NewsScreen'
 import NewsDetailScreen from './components/News/NewsDetailScreen'
+import BookedTourDetailScreen from './components/User/BookedTourDetailScreen'
 
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator()
@@ -116,7 +117,18 @@ const StackNavigator = () => {
         <Stack.Screen name='OrderTicket' component={OrderTicketScreen} />
         <Stack.Screen name='ConfirmOrder' component={ConfirmOrderScreen} />
         <Stack.Screen name='Payment' component={PaymentScreen} />
-        <Stack.Screen name='News' component={NewsScreen} />
+        <Stack.Screen
+          name='BookedTourDetail'
+          component={BookedTourDetailScreen}
+        />
+        <Stack.Screen
+          name='News'
+          component={NewsScreen}
+          options={{
+            tabBarLabel: 'News',
+            headerShown: false,
+          }}
+        />
         <Stack.Screen name='NewsDetail' component={NewsDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>

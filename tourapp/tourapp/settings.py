@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',  # replaces 'django.contrib.admin'
+
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"

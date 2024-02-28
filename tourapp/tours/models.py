@@ -21,6 +21,7 @@ class Admin(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+    phone_number = models.CharField(max_length=15, null=False)
 
     def __str__(self):
         return self.user.__str__()
@@ -142,6 +143,7 @@ class TourComment(BaseModel):
 
 class News(BaseModel):
     title = models.CharField(max_length=150, null=False)
+    main_image = models.ImageField(upload_to='news/%Y/%m', default=None)
     content = RichTextField(null=False)
     author = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
 

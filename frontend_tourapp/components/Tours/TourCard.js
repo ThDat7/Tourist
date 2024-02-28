@@ -1,19 +1,18 @@
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { FontAwesome } from '@expo/vector-icons'
+import AuthAPI from '../../configs/AuthApi'
+import { endpoints } from '../../configs/API'
 
 const TourCard = ({ tour, selectedDates }) => {
-  const { width, height } = Dimensions.get('window')
   const navigation = useNavigation()
+
+  const toggleSave = async (id) => {
+    await AuthAPI.get(endpoints['toggle-save-tour'](id))
+  }
+
   return (
     <View>
       <Pressable
@@ -27,7 +26,12 @@ const TourCard = ({ tour, selectedDates }) => {
       >
         <View>
           <Image
-            style={{ height: height / 5, width: width - 300 }}
+            style={{
+              width: 100,
+              height: 150,
+              resizeMode: 'cover',
+              borderRadius: 7,
+            }}
             source={{ uri: tour.main_image }}
           />
         </View>
@@ -41,7 +45,9 @@ const TourCard = ({ tour, selectedDates }) => {
             }}
           >
             <Text style={{ width: 200 }}>{tour.place_name}</Text>
-            <AntDesign name='hearto' size={24} color='red' />
+            <Pressable onPress={() => toggleSave(tour.id)}>
+              <AntDesign name='hearto' size={24} color='red' />
+            </Pressable>
           </View>
 
           <Text style={{ fontSize: 18, fontWeight: 700 }}>{tour.name}</Text>

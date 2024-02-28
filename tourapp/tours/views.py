@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import cloudinary
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
@@ -13,9 +14,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 
 from tours.models import Tour, TouristPlace, Rating, ScheduleRecurringWeekly, Customer, Booking, BookingStatus, Config, \
-    ConfigKey, News
+    ConfigKey, News, NewsLike, NewsComment, SavedTours
 from tours.serializers import SearchSuggestionSerializer, TourSearchSerializer, TourSerializer, RatingSerializer, \
-    TourPricingSerializer, TourScheduleSerializer, CustomerSerializer, BookingSerializer, NewsSerializer
+    TourPricingSerializer, TourScheduleSerializer, CustomerSerializer, BookingSerializer, NewsSerializer, \
+    NewsDetailSerializer
 
 
 # Create your views here.
@@ -51,8 +53,8 @@ class TourSearchView(APIView):
         )
 
         data = {
-            'tours': TourSearchSerializer([tour], many=True).data,
-            'related_tours': TourSearchSerializer(related_tours, many=True).data
+            'tours': TourSearchSerializer([tour], context={'request': request}, many=True).data,
+            'related_tours': TourSearchSerializer(related_tours, context={'request': request}, many=True).data
         }
 
         return Response(data)
@@ -65,7 +67,7 @@ class TouristPlaceSearchView(APIView):
             avg_rating=Avg('booking__rating__rate')
         )
         data = {
-            'tours': TourSearchSerializer(tours, many=True).data
+            'tours': TourSearchSerializer(tours, context={'request': request}, many=True).data
         }
         return Response(data)
 
@@ -107,6 +109,15 @@ class CustomerView(APIView):
         customer = Customer.objects.filter(user_id=user_id).select_related('user').first()
         serializer = CustomerSerializer(customer, data=request.data)
         if serializer.is_valid():
+            avatar = request.data.get('avatar')
+            if customer.user.avatar:
+                public_id = customer.user.avatar.public_id
+                cloudinary.uploader.destroy(public_id)
+            if avatar:
+                uploaded_avatar = cloudinary.uploader.upload(avatar, folder=f'user-avt/{customer.user.id}/',
+                                                             orverwrite=True)
+                customer.user.avatar = uploaded_avatar['secure_url']
+                customer.user.save()
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
@@ -223,6 +234,10 @@ class OrderBookingView(APIView):
         today = datetime.now()
         end_date = today + timedelta(days=90)
 
+        #
+        print(tour.id)
+        print(date_start.weekday(), ' ', days_in_week[0])
+
         if (date_start.weekday() + 2 in days_in_week and
                 date_start not in excludes_day and
                 today <= date_start <= end_date):
@@ -231,15 +246,63 @@ class OrderBookingView(APIView):
             return False
 
 
-class NewsViewSet(ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
-    queryset = News.objects.all()
-    serializer_class = NewsSerializer
-    permission_classes = [permissions.AllowAny]
+class NewsView(APIView):
+    def get(self, request, format=None):
+        news = News.objects.all()
+        serializer = NewsSerializer(news, context={'request': request}, many=True)
+        return Response(serializer.data)
 
 
-class LikeNewsView(APIView):
-    pass
+class NewsDetailView(APIView):
+    def get(self, request, news_id, format=None):
+        news = News.objects.get(pk=news_id)
+        serializer = NewsDetailSerializer(news, context={'request': request})
+        return Response(serializer.data)
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]
+
+
+class ToggleLikeView(APIView):
+    def get(self, request, news_id, format=None):
+        user_id = request.user.id
+        is_like = NewsLike.objects.filter(customer__user_id=user_id, new_id=news_id)
+        if is_like:
+            is_like.delete()
+        else:
+            customer = Customer.objects.filter(user_id=user_id).first()
+            NewsLike.objects.create(customer_id=customer.id, new_id=news_id)
+
+        return Response('', status=201)
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]
 
 
 class CommentNewsView(APIView):
-    pass
+    def post(self, request, news_id, format=None):
+        user_id = request.user.id
+        customer = Customer.objects.filter(user_id=user_id).first()
+        cmt = request.data.get('cmt')
+        NewsComment.objects.create(customer_id=customer.id, new_id=news_id, cmt=cmt)
+
+        return Response('', status=201)
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]
+
+
+class ToggleSaveTourView(APIView):
+    def get(self, request, tour_id, format=None):
+        user_id = request.user.id
+        is_save = SavedTours.objects.filter(customer__user_id=user_id, tour_id=tour_id)
+        if is_save:
+            is_save.delete()
+        else:
+            customer = Customer.objects.filter(user_id=user_id).first()
+            SavedTours.objects.create(customer_id=customer.id, tour_id=tour_id)
+
+        return Response('', status=201)
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated()]

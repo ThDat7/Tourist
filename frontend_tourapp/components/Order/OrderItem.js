@@ -17,22 +17,21 @@ const OrderItem = ({
       <Image
         style={{
           width: 100,
-          height: 100,
+          height: 150,
           resizeMode: 'cover',
           borderRadius: 7,
         }}
         source={{ uri: image }}
       />
     </View>
-    <View style={{}}>
+    <View style={{ width: '65%' }}>
       <Text
         style={{
           fontSize: 18,
           fontWeight: 700,
-          width: '80%',
         }}
       >
-        {tourName} aaaaaaaaa
+        {tourName}
       </Text>
       <Text>{startTime}</Text>
       <View
@@ -43,10 +42,11 @@ const OrderItem = ({
       >
         <Text style={{}}>
           <MaterialCommunityIcons name='human-child' size={20} color='black' />{' '}
-          {adultCount} x người lớn
+          <Text style={{ color: 'red', fontWeight: 700 }}>{adultCount} </Text>
+          người lớn
         </Text>
-        <Text>x</Text>
-        <Text>{adultPrice}</Text>
+        <Text style={{ marginLeft: 40 }}>x</Text>
+        <Text style={{ marginLeft: 'auto' }}>{adultPrice}</Text>
       </View>
       <View
         style={{
@@ -57,10 +57,13 @@ const OrderItem = ({
         <Text style={{}}>
           <FontAwesome5 name='baby' size={20} color='black' />
           {'  '}
-          {childCount} x trẻ em
+          <Text style={{ color: 'red', fontWeight: 700 }}>
+            {childCount}
+          </Text>{' '}
+          trẻ em
         </Text>
-        <Text>x</Text>
-        <Text>{childPrice}</Text>
+        <Text style={{ marginLeft: 60 }}>x</Text>
+        <Text style={{ marginLeft: 'auto' }}>{childPrice}</Text>
       </View>
       <View
         style={{
@@ -68,11 +71,11 @@ const OrderItem = ({
           borderTopWidth: 0.5,
           marginTop: 10,
           paddingTop: 10,
-          justifyContent: 'flex-end',
-          flexDirection: 'row',
         }}
       >
-        <Text>246</Text>
+        <Text style={{ marginLeft: 'auto' }}>
+          {childCount * childPrice + adultCount * adultPrice}
+        </Text>
       </View>
     </View>
   </View>

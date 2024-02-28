@@ -9,15 +9,17 @@ export const endpoints = {
   'tour-pricing': (tourId) => `/tour/${tourId}/pricing`,
   'customer-info': '/customers/',
   'tours-history': '/customers/tours-history/',
+  'tour-history-detail': (id) => `/customers/tours-history/${id}`,
   'order-booking': '/order-booking/',
   news: '/news/',
   'news-detail': (id) => `/news/${id}`,
-  'like-new': (id) => `/news/${id}/like`,
   'cmt-new': (id) => `/news/${id}/comments`,
   login: '/login/',
   logout: '/logout/',
   'verify-token': '/token/verify/',
   'refresh-token': '/token/refresh/',
+  'do-toggle-like-news': (id) => `/news/${id}/toggle-like`,
+  'toggle-save-tour': (id) => `/tour/${id}/toogle-save`,
 }
 
 export default axios.create({
@@ -25,6 +27,6 @@ export default axios.create({
   headers: {
     'content-type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 0,
   withCredentials: false,
 })

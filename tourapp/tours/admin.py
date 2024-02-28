@@ -1,18 +1,19 @@
+import types
+
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 from django.contrib import admin
 from django.utils.html import mark_safe
 
 from tours.models import Tour, Customer, News, Rating, Booking, Config, ScheduleRecurringWeekly, Tag, TouristPlace, \
-    Staff, User, ScheduleRecurringInWeek, ScheduleExcludeDate, TourComment, NewsComment
+    Staff, User, ScheduleRecurringInWeek, ScheduleExcludeDate, TourComment, NewsComment, SavedTours
 
 
 # Register your models here.
-
 class UserAdmin(admin.ModelAdmin):
     list_display = ['pk', 'last_name', 'first_name', 'username']
     search_fields = ['last_name', 'first_name', 'username']
-    list_filter = ['id', 'last_name', 'first_name', 'username']
+    list_filter = ['last_name', 'first_name', 'username']
 
 
 class UserInlineAdmin(admin.StackedInline):
@@ -22,25 +23,25 @@ class UserInlineAdmin(admin.StackedInline):
 class CustomerAdmin(admin.ModelAdmin):
     inlines = [UserInlineAdmin]
     search_fields = ['id', 'user']
-    list_filter = ['id', 'user']
+    list_filter = ['user']
 
 
 class StaffAdmin(admin.ModelAdmin):
     inlines = [UserInlineAdmin]
     search_fields = ['id', 'user']
-    list_filter = ['id', 'user']
+    list_filter = ['user']
 
 
 class TouristPlaceAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     search_fields = ['name', ]
-    list_filter = ['id', 'name']
+    list_filter = ['name']
 
 
 class TagAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     search_fields = ['name', ]
-    list_filter = ['id', 'name']
+    list_filter = ['name']
 
 
 class TagInlineAdmin(admin.StackedInline):
@@ -75,7 +76,7 @@ class TourForm(forms.ModelForm):
 class TourAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'place']
     search_fields = ['name', 'description', 'place']
-    list_filter = ['id', 'place']
+    list_filter = ['place']
     inlines = [TagInlineAdmin, ScheduleRecurringWeeklyInlineAdmin]
     readonly_fields = ['main_image_preview']
     form = TourForm
@@ -88,19 +89,19 @@ class TourAdmin(admin.ModelAdmin):
 class BookingAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer', 'tour']
     search_fields = ['customer', 'tour']
-    list_filter = ['id']
+    list_filter = ['status']
 
 
 class RatingAdmin(admin.ModelAdmin):
     list_display = ['pk', 'booking', 'rate']
     search_fields = ['name', 'booking', 'rate', 'cmt']
-    list_filter = ['id', 'rate']
+    list_filter = ['rate']
 
 
 class TourCommentAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer', 'tour', 'cmt']
     search_fields = ['name', 'customer', 'tour', 'cmt']
-    list_filter = ['id', 'cmt', 'tour']
+    list_filter = ['cmt', 'tour']
 
 
 class NewsForm(forms.ModelForm):
@@ -114,20 +115,20 @@ class NewsForm(forms.ModelForm):
 class NewsAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'author', ]
     search_fields = ['name', 'title', 'content', 'author']
-    list_filter = ['id', 'author']
+    list_filter = ['author']
     form = NewsForm
 
 
 class NewsCommentAdmin(admin.ModelAdmin):
     list_display = ['pk', 'new', 'customer', 'cmt']
     search_fields = ['name', 'new', 'customer', 'comment']
-    list_filter = ['id', 'customer', 'new']
+    list_filter = ['customer', 'new']
 
 
 class ConfigAdmin(admin.ModelAdmin):
     list_display = ['pk', 'key', 'value']
     search_fields = ['name', 'key', 'value']
-    list_filter = ['id', 'key']
+    list_filter = ['key']
 
 
 admin.site.register(Tour, TourAdmin)

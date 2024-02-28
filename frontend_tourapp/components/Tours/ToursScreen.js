@@ -53,7 +53,6 @@ const ToursScreen = () => {
     }
     fetchTours()
   }, [data])
-
   return (
     <View>
       {loading && <Text>Fetching tours....</Text>}
